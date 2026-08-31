@@ -283,3 +283,370 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Life Dashboard</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #1f2937;
+    }
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+    header {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      padding: 35px;
+      border-radius: 20px;
+      margin-bottom: 25px;
+    }
+    header h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+    header p {
+      opacity: 0.9;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .card {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+    .card h2 {
+      margin-bottom: 15px;
+    }
+    .task-input, .goal-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    input {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+    button {
+      border: none;
+      background: #4f46e5;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #4338ca;
+    }
+    ul {
+      list-style: none;
+    }
+    li {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .task-text {
+      cursor: pointer;
+      flex: 1;
+    }
+    .task-text.done {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+    .delete-btn {
+      background: #ef4444;
+      padding: 5px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+    .delete-btn:hover {
+      background: #dc2626;
+    }
+    .goal {
+      margin-bottom: 15px;
+    }
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+    .progress {
+      background: #e5e7eb;
+      height: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 4px;
+      cursor: pointer;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #4f46e5;
+      transition: width 0.3s ease;
+    }
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      resize: vertical;
+      font-family: inherit;
+    }
+    .timer-display {
+      font-size: 36px;
+      font-weight: bold;
+      text-align: center;
+      margin: 15px 0;
+      color: #4f46e5;
+    }
+    .timer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+    .full {
+      grid-column: 1 / -1;
+    }
+    @media (max-width: 700px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .full {
+        grid-column: auto;
+      }
+      header h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🏠 My Life Dashboard</h1>
+      <p>Organize your goals, tasks, study time, and notes in one place.</p>
+    </header>
+    
+    <div class="grid">
+      <!-- Goals -->
+      <div class="card">
+        <h2>🎯 Goals & Progress</h2>
+        <div class="goal-input">
+          <input id="goalInput" type="text" placeholder="New goal title...">
+          <button onclick="addGoal()">Add</button>
+        </div>
+        <div id="goalList">
+          <div class="goal">
+            <div class="goal-header">
+              <strong>Study Sessions</strong>
+              <span id="goal-pct-1">60%</span>
+            </div>
+            <div class="progress" onclick="updateGoalProgress(this, 'goal-pct-1')">
+              <div class="progress-bar" style="width: 60%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tasks -->
+      <div class="card">
+        <h2>✅ Tasks</h2>
+        <div class="task-input">
+          <input id="taskInput" type="text" placeholder="Add a new task...">
+          <button onclick="addTask()">Add</button>
+        </div>
+        <ul id="taskList"></ul>
+      </div>
+
+      <!-- Study Timer -->
+      <div class="card">
+        <h2>⏱️ Focus Timer</h2>
+        <div class="timer-display" id="timer">25:00</div>
+        <div class="timer-controls">
+          <button onclick="startTimer()">Start</button>
+          <button onclick="pauseTimer()" style="background: #f59e0b;">Pause</button>
+          <button onclick="resetTimer()" style="background: #6b7280;">Reset</button>
+        </div>
+      </div>
+
+      <!-- Projects & Learning -->
+      <div class="card">
+        <h2>💼 Subject Areas</h2>
+        <ul>
+          <li>📖 Reading & Languages</li>
+          <li>🧬 Science & Math</li>
+          <li>🌐 Web Development</li>
+          <li>💡 Projects & Ideas</li>
+        </ul>
+      </div>
+
+      <!-- Notes -->
+      <div class="card full">
+        <h2>📝 Notes</h2>
+        <textarea id="notes" placeholder="Write your notes here..."></textarea>
+        <br><br>
+        <button onclick="saveNotes()">💾 Save Notes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- TASK MANAGEMENT (with LocalStorage) ---
+    let tasks = JSON.parse(localStorage.getItem("myTasks")) || [
+      { text: "Review study notes", done: false },
+      { text: "Read for 20 minutes", done: false },
+      { text: "Exercise", done: true }
+    ];
+
+    function renderTasks() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+      tasks.forEach((task, index) => {
+        const li = document.createElement("li");
+        
+        const span = document.createElement("span");
+        span.className = "task-text" + (task.done ? " done" : "");
+        span.textContent = task.text;
+        span.onclick = () => toggleTask(index);
+
+        const btn = document.createElement("button");
+        btn.className = "delete-btn";
+        btn.textContent = "✕";
+        btn.onclick = () => deleteTask(index);
+
+        li.appendChild(span);
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+      localStorage.setItem("myTasks", JSON.stringify(tasks));
+    }
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      if (input.value.trim() === "") return;
+      tasks.push({ text: input.value.trim(), done: false });
+      input.value = "";
+      renderTasks();
+    }
+
+    function toggleTask(index) {
+      tasks[index].done = !tasks[index].done;
+      renderTasks();
+    }
+
+    function deleteTask(index) {
+      tasks.splice(index, 1);
+      renderTasks();
+    }
+
+    // --- GOAL MANAGEMENT ---
+    let goalCount = 1;
+    function addGoal() {
+      const input = document.getElementById("goalInput");
+      if (input.value.trim() === "") return;
+      
+      goalCount++;
+      const id = "goal-pct-" + goalCount;
+      const goalHtml = `
+        <div class="goal">
+          <div class="goal-header">
+            <strong>${input.value.trim()}</strong>
+            <span id="${id}">0%</span>
+          </div>
+          <div class="progress" onclick="updateGoalProgress(this, '${id}')">
+            <div class="progress-bar" style="width: 0%;"></div>
+          </div>
+        </div>
+      `;
+      document.getElementById("goalList").insertAdjacentHTML('beforeend', goalHtml);
+      input.value = "";
+    }
+
+    function updateGoalProgress(element, pctId) {
+      const rect = element.getBoundingClientRect();
+      const clickX = event.clientX - rect.left;
+      const width = rect.width;
+      let percentage = Math.round((clickX / width) * 100);
+      if (percentage < 0) percentage = 0;
+      if (percentage > 100) percentage = 100;
+
+      element.querySelector(".progress-bar").style.width = percentage + "%";
+      document.getElementById(pctId).textContent = percentage + "%";
+    }
+
+    // --- FOCUS TIMER ---
+    let timerInterval = null;
+    let timeLeft = 25 * 60;
+
+    function updateTimerDisplay() {
+      const mins = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+      const secs = (timeLeft % 60).toString().padStart(2, '0');
+      document.getElementById("timer").textContent = `${mins}:${secs}`;
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          timeLeft--;
+          updateTimerDisplay();
+        } else {
+          clearInterval(timerInterval);
+          timerInterval = null;
+          alert("Time's up! Take a short break.");
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timeLeft = 25 * 60;
+      updateTimerDisplay();
+    }
+
+    // --- NOTES MANAGEMENT ---
+    function saveNotes() {
+      const notes = document.getElementById("notes").value;
+      localStorage.setItem("myNotes", notes);
+      alert("Notes saved locally!");
+    }
+
+    // Load saved data on startup
+    window.onload = function () {
+      renderTasks();
+      const savedNotes = localStorage.getItem("myNotes");
+      if (savedNotes) {
+        document.getElementById("notes").value = savedNotes;
+      }
+    };
+  </script>
+</body>
+</html>
