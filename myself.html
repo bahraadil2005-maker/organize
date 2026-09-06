@@ -92,6 +92,9 @@
     li {
       padding: 10px;
       border-bottom: 1px solid #eee;
+    }
+
+    #taskList li {
       cursor: pointer;
     }
 
@@ -130,6 +133,17 @@
 
     .full {
       grid-column: 1 / -1;
+    }
+
+    /* YouTube Links Styling */
+    .yt-link {
+      color: #2563eb;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .yt-link:hover {
+      text-decoration: underline;
     }
 
     @media (max-width: 700px) {
@@ -218,12 +232,24 @@
         </ul>
       </div>
 
+      <!-- YouTube Links -->
+      <div class="card full">
+        <h2>▶️ YouTube Links</h2>
+
+        <div class="task-input">
+          <input id="ytTitleInput" type="text" placeholder="Title (e.g. Physics Revision)">
+          <input id="ytUrlInput" type="text" placeholder="Paste YouTube link (https://...)">
+          <button onclick="addYtLink()">Save Link</button>
+        </div>
+
+        <ul id="ytList"></ul>
+      </div>
+
       <!-- Notes -->
       <div class="card full">
         <h2>📝 Notes</h2>
 
-        <textarea id="notes"
-          placeholder="Write your notes here..."></textarea>
+        <textarea id="notes" placeholder="Write your notes here..."></textarea>
 
         <br><br>
 
@@ -240,9 +266,7 @@
       const input = document.getElementById("taskInput");
       const task = input.value.trim();
 
-      if (task === "") {
-        return;
-      }
+      if (task === "") return;
 
       const li = document.createElement("li");
       li.textContent = task;
@@ -252,7 +276,6 @@
       };
 
       document.getElementById("taskList").appendChild(li);
-
       input.value = "";
     }
 
@@ -264,19 +287,60 @@
     // Save notes
     function saveNotes() {
       const notes = document.getElementById("notes").value;
-
       localStorage.setItem("myNotes", notes);
-
       alert("Notes saved!");
     }
 
-    // Load saved notes
+    // Add and persist YouTube Links
+    function addYtLink(titleText = null, urlText = null, isInitialLoad = false) {
+      const titleInput = document.getElementById("ytTitleInput");
+      const urlInput = document.getElementById("ytUrlInput");
+
+      const title = titleText || titleInput.value.trim();
+      const url = urlText || urlInput.value.trim();
+
+      if (!url) return;
+
+      const formattedUrl = url.startsWith("http://") || url.startsWith("https://") ? url : "https://" + url;
+      const displayTitle = title || formattedUrl;
+
+      const li = document.createElement("li");
+      li.innerHTML = `🎥 <strong>${displayTitle}:</strong> <a href="${formattedUrl}" target="_blank" class="yt-link">${formattedUrl}</a>`;
+
+      document.getElementById("ytList").appendChild(li);
+
+      if (!isInitialLoad) {
+        saveYtLinks();
+        titleInput.value = "";
+        urlInput.value = "";
+      }
+    }
+
+    function saveYtLinks() {
+      const links = [];
+      document.querySelectorAll("#ytList li").forEach(li => {
+        const title = li.querySelector("strong").innerText.replace(":", "");
+        const url = li.querySelector("a").href;
+        links.push({ title, url });
+      });
+      localStorage.setItem("myYtLinks", JSON.stringify(links));
+    }
+
+    function loadYtLinks() {
+      const saved = localStorage.getItem("myYtLinks");
+      if (saved) {
+        const links = JSON.parse(saved);
+        links.forEach(item => addYtLink(item.title, item.url, true));
+      }
+    }
+
+    // Load saved content
     window.onload = function () {
       const savedNotes = localStorage.getItem("myNotes");
-
       if (savedNotes) {
         document.getElementById("notes").value = savedNotes;
       }
+      loadYtLinks();
     };
 
   </script>
