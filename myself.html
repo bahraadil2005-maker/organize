@@ -6,6 +6,22 @@
   <title>My Life Dashboard</title>
 
   <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg: #f5f7fb;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+      --border: #e5e7eb;
+    }
+
+    body.dark-mode {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --text: #f8fafc;
+      --border: #334155;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -14,8 +30,9 @@
 
     body {
       font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      color: #1f2937;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
     }
 
     .container {
@@ -25,11 +42,12 @@
     }
 
     header {
-      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
       color: white;
       padding: 35px;
       border-radius: 20px;
       margin-bottom: 25px;
+      position: relative;
     }
 
     header h1 {
@@ -37,8 +55,30 @@
       margin-bottom: 8px;
     }
 
-    header p {
-      opacity: 0.9;
+    .ayah-box {
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      font-style: italic;
+      font-size: 15px;
+    }
+
+    /* Color Theme Selector */
+    .controls-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .color-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid white;
+      cursor: pointer;
     }
 
     .grid {
@@ -48,10 +88,11 @@
     }
 
     .card {
-      background: white;
+      background: var(--card-bg);
       padding: 25px;
       border-radius: 16px;
       box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
     }
 
     .card h2 {
@@ -64,17 +105,22 @@
       margin-bottom: 15px;
     }
 
+    input, textarea {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
     input {
       flex: 1;
       padding: 12px;
-      border: 1px solid #ddd;
       border-radius: 8px;
       font-size: 15px;
     }
 
     button {
       border: none;
-      background: #4f46e5;
+      background: var(--primary);
       color: white;
       padding: 12px 18px;
       border-radius: 8px;
@@ -82,7 +128,7 @@
     }
 
     button:hover {
-      background: #4338ca;
+      filter: brightness(0.9);
     }
 
     ul {
@@ -91,24 +137,35 @@
 
     li {
       padding: 10px;
-      border-bottom: 1px solid #eee;
-    }
-
-    #taskList li {
+      border-bottom: 1px solid var(--border);
       cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     li.done {
       text-decoration: line-through;
-      color: #9ca3af;
+      opacity: 0.5;
+    }
+
+    li::before {
+      content: "☐";
+      font-size: 16px;
+    }
+
+    li.done::before {
+      content: "☑";
     }
 
     .goal {
       margin-bottom: 15px;
+      cursor: pointer;
     }
 
     .progress {
-      background: #e5e7eb;
+      background: var(--border);
       height: 10px;
       border-radius: 10px;
       overflow: hidden;
@@ -117,7 +174,7 @@
 
     .progress-bar {
       height: 100%;
-      background: #4f46e5;
+      background: var(--primary);
       width: 60%;
     }
 
@@ -125,7 +182,6 @@
       width: 100%;
       min-height: 150px;
       padding: 12px;
-      border: 1px solid #ddd;
       border-radius: 8px;
       resize: vertical;
       font-family: inherit;
@@ -135,29 +191,23 @@
       grid-column: 1 / -1;
     }
 
-    /* YouTube Links Styling */
+    .streak-display {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
     .yt-link {
       color: #2563eb;
       text-decoration: none;
       word-break: break-all;
     }
 
-    .yt-link:hover {
-      text-decoration: underline;
-    }
-
     @media (max-width: 700px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .full {
-        grid-column: auto;
-      }
-
-      header h1 {
-        font-size: 26px;
-      }
+      .grid { grid-template-columns: 1fr; }
+      .full { grid-column: auto; }
+      header h1 { font-size: 26px; }
     }
   </style>
 </head>
@@ -167,30 +217,52 @@
   <div class="container">
 
     <header>
-      <h1>🏠 My Life Dashboard</h1>
+      <h1>👋 Welcome!</h1>
       <p>Organize your goals, tasks, learning, projects and notes.</p>
+      
+      <div class="ayah-box" id="dailyAyah">
+        📖 Loading daily verse...
+      </div>
     </header>
 
+    <!-- Dashboard Controls -->
+    <div class="controls-bar">
+      <span>Theme Accent:</span>
+      <div class="color-btn" style="background:#4f46e5" onclick="changeColor('#4f46e5')"></div>
+      <div class="color-btn" style="background:#059669" onclick="changeColor('#059669')"></div>
+      <div class="color-btn" style="background:#dc2626" onclick="changeColor('#dc2626')"></div>
+      <div class="color-btn" style="background:#d97706" onclick="changeColor('#d97706')"></div>
+      <div class="color-btn" style="background:#475569" onclick="changeColor('#475569')"></div>
+      <button onclick="toggleDarkMode()" style="margin-left: auto; padding: 6px 12px;">🌙 Dark Mode</button>
+    </div>
+
     <div class="grid">
+
+      <!-- Streak Tracker -->
+      <div class="card full">
+        <h2>🔥 Day Streak</h2>
+        <div class="streak-display" id="streakCount">0 Days</div>
+        <button onclick="addStreak()">+ Record Productive Day</button>
+        <button onclick="resetStreak()" style="background: #9ca3af;">Reset</button>
+      </div>
 
       <!-- Goals -->
       <div class="card">
         <h2>🎯 Goals</h2>
 
-        <div class="goal">
+        <div class="goal" onclick="toggleGoal(this)">
           <strong>Learn HTML</strong>
           <div class="progress">
             <div class="progress-bar" style="width: 60%;"></div>
           </div>
         </div>
 
-        <div class="goal">
+        <div class="goal" onclick="toggleGoal(this)">
           <strong>Build my website</strong>
           <div class="progress">
             <div class="progress-bar" style="width: 30%;"></div>
           </div>
         </div>
-
       </div>
 
       <!-- Tasks -->
@@ -203,9 +275,9 @@
         </div>
 
         <ul id="taskList">
-          <li onclick="completeTask(this)">Study HTML</li>
-          <li onclick="completeTask(this)">Read for 20 minutes</li>
-          <li onclick="completeTask(this)">Exercise</li>
+          <li onclick="toggleItem(this)">Study HTML</li>
+          <li onclick="toggleItem(this)">Read for 20 minutes</li>
+          <li onclick="toggleItem(this)">Exercise</li>
         </ul>
       </div>
 
@@ -214,10 +286,10 @@
         <h2>📚 Learning</h2>
 
         <ul>
-          <li>🌐 HTML</li>
-          <li>🎨 CSS</li>
-          <li>⚡ JavaScript</li>
-          <li>🐍 Python</li>
+          <li onclick="toggleItem(this)">🌐 HTML</li>
+          <li onclick="toggleItem(this)">🎨 CSS</li>
+          <li onclick="toggleItem(this)">⚡ JavaScript</li>
+          <li onclick="toggleItem(this)">🐍 Python</li>
         </ul>
       </div>
 
@@ -226,9 +298,9 @@
         <h2>💼 Projects</h2>
 
         <ul>
-          <li>🏠 Personal Dashboard</li>
-          <li>🌐 My Website</li>
-          <li>💡 New Project Ideas</li>
+          <li onclick="toggleItem(this)">🏠 Personal Dashboard</li>
+          <li onclick="toggleItem(this)">🌐 My Website</li>
+          <li onclick="toggleItem(this)">💡 New Project Ideas</li>
         </ul>
       </div>
 
@@ -250,9 +322,7 @@
         <h2>📝 Notes</h2>
 
         <textarea id="notes" placeholder="Write your notes here..."></textarea>
-
         <br><br>
-
         <button onclick="saveNotes()">💾 Save Notes</button>
       </div>
 
@@ -260,8 +330,26 @@
   </div>
 
   <script>
+    // Verses Array
+    const ayahList = [
+      "\"And Allah would not let your faith be wasted.\" — (Quran 2:143)",
+      "\"So remember Me; I will remember you.\" — (Quran 2:152)",
+      "\"Indeed, with hardship comes ease.\" — (Quran 94:6)",
+      "\"And He found you lost and guided you.\" — (Quran 93:7)",
+      "\"My Lord, increase me in knowledge.\" — (Quran 20:114)"
+    ];
 
-    // Add a new task
+    // Toggle tick and strike-through
+    function toggleItem(element) {
+      element.classList.toggle("done");
+    }
+
+    function toggleGoal(element) {
+      element.style.opacity = element.style.opacity === "0.5" ? "1" : "0.5";
+      element.style.textDecoration = element.style.textDecoration === "line-through" ? "none" : "line-through";
+    }
+
+    // Add Task
     function addTask() {
       const input = document.getElementById("taskInput");
       const task = input.value.trim();
@@ -270,28 +358,49 @@
 
       const li = document.createElement("li");
       li.textContent = task;
-
-      li.onclick = function () {
-        completeTask(this);
-      };
+      li.onclick = function () { toggleItem(this); };
 
       document.getElementById("taskList").appendChild(li);
       input.value = "";
     }
 
-    // Complete a task
-    function completeTask(element) {
-      element.classList.toggle("done");
+    // Streak Logic
+    let streak = parseInt(localStorage.getItem("myStreak") || "0");
+    function updateStreakDisplay() {
+      document.getElementById("streakCount").textContent = streak + " Days";
     }
 
-    // Save notes
+    function addStreak() {
+      streak++;
+      localStorage.setItem("myStreak", streak);
+      updateStreakDisplay();
+    }
+
+    function resetStreak() {
+      streak = 0;
+      localStorage.setItem("myStreak", streak);
+      updateStreakDisplay();
+    }
+
+    // Colors & Theme Logic
+    function changeColor(color) {
+      document.documentElement.style.setProperty('--primary', color);
+      localStorage.setItem("myColor", color);
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+    }
+
+    // Save & Load Notes
     function saveNotes() {
       const notes = document.getElementById("notes").value;
       localStorage.setItem("myNotes", notes);
       alert("Notes saved!");
     }
 
-    // Add and persist YouTube Links
+    // YouTube Link logic
     function addYtLink(titleText = null, urlText = null, isInitialLoad = false) {
       const titleInput = document.getElementById("ytTitleInput");
       const urlInput = document.getElementById("ytUrlInput");
@@ -305,6 +414,7 @@
       const displayTitle = title || formattedUrl;
 
       const li = document.createElement("li");
+      li.style.cursor = "default";
       li.innerHTML = `🎥 <strong>${displayTitle}:</strong> <a href="${formattedUrl}" target="_blank" class="yt-link">${formattedUrl}</a>`;
 
       document.getElementById("ytList").appendChild(li);
@@ -319,9 +429,12 @@
     function saveYtLinks() {
       const links = [];
       document.querySelectorAll("#ytList li").forEach(li => {
-        const title = li.querySelector("strong").innerText.replace(":", "");
-        const url = li.querySelector("a").href;
-        links.push({ title, url });
+        const titleEl = li.querySelector("strong");
+        if (titleEl) {
+          const title = titleEl.innerText.replace(":", "");
+          const url = li.querySelector("a").href;
+          links.push({ title, url });
+        }
       });
       localStorage.setItem("myYtLinks", JSON.stringify(links));
     }
@@ -334,16 +447,30 @@
       }
     }
 
-    // Load saved content
+    // On Load Initialization
     window.onload = function () {
+      // Set random Ayah
+      const randomIndex = Math.floor(Math.random() * ayahList.length);
+      document.getElementById("dailyAyah").textContent = ayahList[randomIndex];
+
+      // Restore Notes
       const savedNotes = localStorage.getItem("myNotes");
-      if (savedNotes) {
-        document.getElementById("notes").value = savedNotes;
+      if (savedNotes) document.getElementById("notes").value = savedNotes;
+
+      // Restore Color & Theme
+      const savedColor = localStorage.getItem("myColor");
+      if (savedColor) changeColor(savedColor);
+
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
       }
+
+      updateStreakDisplay();
       loadYtLinks();
     };
-
   </script>
 
 </body>
 </html>
+
+```
