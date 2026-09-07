@@ -304,6 +304,19 @@
         </ul>
       </div>
 
+      <!-- Reading List -->
+      <div class="card full">
+        <h2>📖 Books to Read</h2>
+
+        <div class="task-input">
+          <input id="bookTitleInput" type="text" placeholder="Book Title...">
+          <input id="bookAuthorInput" type="text" placeholder="Author (optional)...">
+          <button onclick="addBook()">Add Book</button>
+        </div>
+
+        <ul id="bookList"></ul>
+      </div>
+
       <!-- YouTube Links -->
       <div class="card full">
         <h2>▶️ YouTube Links</h2>
@@ -362,6 +375,60 @@
 
       document.getElementById("taskList").appendChild(li);
       input.value = "";
+    }
+
+    // Book List Logic
+    function addBook(titleText = null, authorText = null, done = false, isInitialLoad = false) {
+      const titleInput = document.getElementById("bookTitleInput");
+      const authorInput = document.getElementById("bookAuthorInput");
+
+      const title = titleText || titleInput.value.trim();
+      const author = authorText || authorInput.value.trim();
+
+      if (!title) return;
+
+      const li = document.createElement("li");
+      const displayText = author ? `<strong>${title}</strong> — <em>${author}</em>` : `<strong>${title}</strong>`;
+      li.innerHTML = displayText;
+
+      if (done) li.classList.add("done");
+
+      li.onclick = function () {
+        toggleItem(this);
+        saveBooks();
+      };
+
+      document.getElementById("bookList").appendChild(li);
+
+      if (!isInitialLoad) {
+        saveBooks();
+        titleInput.value = "";
+        authorInput.value = "";
+      }
+    }
+
+    function saveBooks() {
+      const books = [];
+      document.querySelectorAll("#bookList li").forEach(li => {
+        const titleEl = li.querySelector("strong");
+        const authorEl = li.querySelector("em");
+        if (titleEl) {
+          books.push({
+            title: titleEl.innerText,
+            author: authorEl ? authorEl.innerText : "",
+            done: li.classList.contains("done")
+          });
+        }
+      });
+      localStorage.setItem("myBooks", JSON.stringify(books));
+    }
+
+    function loadBooks() {
+      const saved = localStorage.getItem("myBooks");
+      if (saved) {
+        const books = JSON.parse(saved);
+        books.forEach(item => addBook(item.title, item.author, item.done, true));
+      }
     }
 
     // Streak Logic
@@ -466,11 +533,10 @@
       }
 
       updateStreakDisplay();
+      loadBooks();
       loadYtLinks();
     };
   </script>
 
 </body>
 </html>
-
-```
