@@ -64,6 +64,75 @@
       font-size: 15px;
     }
 
+    /* CTA Styles */
+    .cta-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .cta-primary {
+      background: #ffffff;
+      color: var(--primary) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .cta-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: #ffffff !important;
+      border-color: #ffffff;
+    }
+
+    .cta-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Page End CTA Banner */
+    .cta-banner {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+      margin-top: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .cta-banner h2 {
+      margin-bottom: 10px;
+    }
+
+    .cta-banner .cta-primary {
+      background: var(--primary);
+      color: #ffffff !important;
+    }
+
+    .cta-banner .cta-secondary {
+      color: var(--text) !important;
+      border-color: var(--border);
+    }
+
     /* Color Theme Selector */
     .controls-bar {
       display: flex;
@@ -208,6 +277,7 @@
       .grid { grid-template-columns: 1fr; }
       .full { grid-column: auto; }
       header h1 { font-size: 26px; }
+      .cta-group { justify-content: center; }
     }
   </style>
 </head>
@@ -220,6 +290,12 @@
       <h1>👋 Welcome!</h1>
       <p>Organize your goals, tasks, learning, projects and notes.</p>
       
+      <!-- Above the fold CTAs -->
+      <div class="cta-group">
+        <a href="#contact" class="cta-button cta-primary">Book a Call</a>
+        <a href="#portfolio" class="cta-button cta-secondary">View Portfolio</a>
+      </div>
+
       <div class="ayah-box" id="dailyAyah">
         📖 Loading daily verse...
       </div>
@@ -340,6 +416,16 @@
       </div>
 
     </div>
+
+    <!-- End of Page CTA Section -->
+    <section class="cta-banner">
+      <h2>Ready to connect or get started?</h2>
+      <div class="cta-group" style="justify-content: center;">
+        <a href="#contact" class="cta-button cta-primary">Book a Call</a>
+        <a href="#portfolio" class="cta-button cta-secondary">View Portfolio</a>
+      </div>
+    </section>
+
   </div>
 
   <script>
