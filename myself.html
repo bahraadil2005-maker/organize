@@ -273,6 +273,46 @@
       word-break: break-all;
     }
 
+    /* Pomodoro Clock Specific Styles */
+    .pomo-card {
+      text-align: center;
+    }
+
+    .pomo-display {
+      font-size: 48px;
+      font-weight: bold;
+      color: var(--primary);
+      margin: 15px 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pomo-modes {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .pomo-modes button {
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .pomo-modes button.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .pomo-controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
       .full { grid-column: auto; }
@@ -320,6 +360,21 @@
         <div class="streak-display" id="streakCount">0 Days</div>
         <button onclick="addStreak()">+ Record Productive Day</button>
         <button onclick="resetStreak()" style="background: #9ca3af;">Reset</button>
+      </div>
+
+      <!-- Pomodoro Focus Timer -->
+      <div class="card full pomo-card">
+        <h2>⏱️ Focus Pomodoro</h2>
+        <div class="pomo-modes">
+          <button id="modeFocus" class="active" onclick="setPomodoroMode(25, 'Focus Session', this)">25m Focus</button>
+          <button id="modeShort" onclick="setPomodoroMode(5, 'Short Break', this)">5m Break</button>
+          <button id="modeLong" onclick="setPomodoroMode(15, 'Long Break', this)">15m Break</button>
+        </div>
+        <div class="pomo-display" id="pomoDisplay">25:00</div>
+        <div class="pomo-controls">
+          <button id="startPomoBtn" onclick="togglePomodoro()">Start Session</button>
+          <button onclick="resetPomodoro()" style="background: #9ca3af;">Reset</button>
+        </div>
       </div>
 
       <!-- Goals -->
@@ -600,6 +655,60 @@
       }
     }
 
+    /* --- Pomodoro Logic --- */
+    let pomoTime = 25 * 60;
+    let currentTotalTime = 25 * 60;
+    let pomoTimer = null;
+    let isRunning = false;
+    let currentSessionLabel = "Focus Session";
+
+    function updatePomoDisplay() {
+      const mins = Math.floor(pomoTime / 60);
+      const secs = pomoTime % 60;
+      const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      document.getElementById("pomoDisplay").innerText = formatted;
+      document.title = isRunning ? `(${formatted}) My Life Dashboard` : 'My Life Dashboard';
+    }
+
+    function togglePomodoro() {
+      const btn = document.getElementById("startPomoBtn");
+      if (isRunning) {
+        clearInterval(pomoTimer);
+        btn.innerText = "Resume";
+        isRunning = false;
+      } else {
+        isRunning = true;
+        btn.innerText = "Pause";
+        pomoTimer = setInterval(() => {
+          if (pomoTime > 0) {
+            pomoTime--;
+            updatePomoDisplay();
+          } else {
+            clearInterval(pomoTimer);
+            alert(`${currentSessionLabel} complete!`);
+            resetPomodoro();
+          }
+        }, 1000);
+      }
+    }
+
+    function resetPomodoro() {
+      clearInterval(pomoTimer);
+      isRunning = false;
+      pomoTime = currentTotalTime;
+      document.getElementById("startPomoBtn").innerText = "Start Session";
+      updatePomoDisplay();
+    }
+
+    function setPomodoroMode(minutes, label, btnElement) {
+      document.querySelectorAll(".pomo-modes button").forEach(b => b.classList.remove("active"));
+      if(btnElement) btnElement.classList.add("active");
+      
+      currentTotalTime = minutes * 60;
+      currentSessionLabel = label;
+      resetPomodoro();
+    }
+
     // On Load Initialization
     window.onload = function () {
       // Set random Ayah
@@ -621,6 +730,7 @@
       updateStreakDisplay();
       loadBooks();
       loadYtLinks();
+      updatePomoDisplay();
     };
   </script>
 
