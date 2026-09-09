@@ -3,282 +3,625 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Personal Dashboard & Study Hub</title>
+  <title>My Life Dashboard</title>
+
   <style>
     :root {
-      --bg-color: #0f172a;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --bg: #f5f7fb;
+      --card-bg: #ffffff;
+      --text: #1f2937;
+      --border: #e5e7eb;
+    }
+
+    body.dark-mode {
+      --bg: #0f172a;
       --card-bg: #1e293b;
-      --text-main: #f8fafc;
-      --text-sub: #94a3b8;
-      --accent-blue: #38bdf8;
-      --accent-green: #4ade80;
-      --accent-red: #f87171;
-      --border-color: #334155;
+      --text: #f8fafc;
+      --border: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      padding: 24px;
-      box-sizing: border-box;
-      min-height: 100vh;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-      color: var(--text-main);
-    }
-
-    header p {
-      color: var(--text-sub);
-      margin-top: 6px;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
     }
 
     .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      color: white;
+      padding: 35px;
+      border-radius: 20px;
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .ayah-box {
+      margin-top: 15px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 10px;
+      font-style: italic;
+      font-size: 15px;
+    }
+
+    /* CTA Styles */
+    .cta-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cta-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .cta-primary {
+      background: #ffffff;
+      color: var(--primary) !important;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .cta-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .cta-secondary {
+      background: transparent;
+      color: #ffffff !important;
+      border-color: #ffffff;
+    }
+
+    .cta-secondary:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Page End CTA Banner */
+    .cta-banner {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+      margin-top: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    .cta-banner h2 {
+      margin-bottom: 10px;
+    }
+
+    .cta-banner .cta-primary {
+      background: var(--primary);
+      color: #ffffff !important;
+    }
+
+    .cta-banner .cta-secondary {
+      color: var(--text) !important;
+      border-color: var(--border);
+    }
+
+    /* Color Theme Selector */
+    .controls-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .color-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid white;
+      cursor: pointer;
+    }
+
+    .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
-      max-width: 1000px;
-      margin: 0 auto;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
     }
 
     .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      padding: 25px;
       border-radius: 16px;
-      padding: 24px;
-      text-align: center;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      border: 1px solid var(--border);
     }
 
-    h2 {
-      margin-top: 0;
-      color: var(--accent-blue);
-      font-size: 1.2rem;
-      letter-spacing: 0.5px;
-    }
-
-    /* Countdown Styling */
-    .countdown-display {
-      display: flex;
-      justify-content: space-around;
-      margin: 24px 0;
-    }
-
-    .time-unit {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .time-number {
-      font-size: 2.2rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .time-label {
-      font-size: 0.75rem;
-      color: var(--text-sub);
-      text-transform: uppercase;
-      margin-top: 4px;
-    }
-
-    .target-date-picker {
-      margin-top: 10px;
-      background: var(--bg-color);
-      border: 1px solid var(--border-color);
-      color: var(--text-main);
-      padding: 6px 12px;
-      border-radius: 8px;
-    }
-
-    /* Pomodoro Styling */
-    .timer-display {
-      font-size: 3.5rem;
-      font-weight: 800;
-      margin: 15px 0;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .button-group {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
+    .card h2 {
       margin-bottom: 15px;
     }
 
-    button {
-      background-color: var(--border-color);
-      color: var(--text-main);
-      border: none;
-      padding: 10px 18px;
+    .task-input {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    input, textarea {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    input {
+      flex: 1;
+      padding: 12px;
       border-radius: 8px;
-      font-weight: 600;
+      font-size: 15px;
+    }
+
+    button {
+      border: none;
+      background: var(--primary);
+      color: white;
+      padding: 12px 18px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: background 0.2s ease, transform 0.1s ease;
     }
 
     button:hover {
-      opacity: 0.9;
+      filter: brightness(0.9);
     }
 
-    button:active {
-      transform: scale(0.98);
+    ul {
+      list-style: none;
     }
 
-    button.btn-primary { background-color: var(--accent-blue); color: #000; }
-    button.btn-success { background-color: var(--accent-green); color: #000; }
-    button.btn-reset { background-color: var(--accent-red); color: #000; }
+    li {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-    .mode-buttons button {
-      padding: 6px 12px;
-      font-size: 0.85rem;
+    li.done {
+      text-decoration: line-through;
+      opacity: 0.5;
+    }
+
+    li::before {
+      content: "☐";
+      font-size: 16px;
+    }
+
+    li.done::before {
+      content: "☑";
+    }
+
+    .goal {
+      margin-bottom: 15px;
+      cursor: pointer;
+    }
+
+    .progress {
+      background: var(--border);
+      height: 10px;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: var(--primary);
+      width: 60%;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 150px;
+      padding: 12px;
+      border-radius: 8px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .full {
+      grid-column: 1 / -1;
+    }
+
+    .streak-display {
+      font-size: 28px;
+      font-weight: bold;
+      color: var(--primary);
+      margin-bottom: 10px;
+    }
+
+    .yt-link {
+      color: #2563eb;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: 1fr; }
+      .full { grid-column: auto; }
+      header h1 { font-size: 26px; }
+      .cta-group { justify-content: center; }
     }
   </style>
 </head>
+
 <body>
 
-  <header>
-    <h1>Personal Study Dashboard</h1>
-    <p>Track your goals and manage focus sessions</p>
-  </header>
-
   <div class="container">
-    
-    <!-- 1. Live Exam Countdown Card -->
-    <div class="card">
-      <h2>Exam Countdown</h2>
-      <div class="countdown-display">
-        <div class="time-unit"><span id="days" class="time-number">00</span><span class="time-label">Days</span></div>
-        <div class="time-unit"><span id="hours" class="time-number">00</span><span class="time-label">Hours</span></div>
-        <div class="time-unit"><span id="mins" class="time-number">00</span><span class="time-label">Mins</span></div>
-        <div class="time-unit"><span id="secs" class="time-number">00</span><span class="time-label">Secs</span></div>
+
+    <header>
+      <h1>👋 Welcome!</h1>
+      <p>Organize your goals, tasks, learning, projects and notes.</p>
+      
+      <!-- Above the fold CTAs -->
+      <div class="cta-group">
+        <a href="#contact" class="cta-button cta-primary">Book a Call</a>
+        <a href="#portfolio" class="cta-button cta-secondary">View Portfolio</a>
       </div>
-      <input type="datetime-local" id="targetDateInput" class="target-date-picker">
+
+      <div class="ayah-box" id="dailyAyah">
+        📖 Loading daily verse...
+      </div>
+    </header>
+
+    <!-- Dashboard Controls -->
+    <div class="controls-bar">
+      <span>Theme Accent:</span>
+      <div class="color-btn" style="background:#4f46e5" onclick="changeColor('#4f46e5')"></div>
+      <div class="color-btn" style="background:#059669" onclick="changeColor('#059669')"></div>
+      <div class="color-btn" style="background:#dc2626" onclick="changeColor('#dc2626')"></div>
+      <div class="color-btn" style="background:#d97706" onclick="changeColor('#d97706')"></div>
+      <div class="color-btn" style="background:#475569" onclick="changeColor('#475569')"></div>
+      <button onclick="toggleDarkMode()" style="margin-left: auto; padding: 6px 12px;">🌙 Dark Mode</button>
     </div>
 
-    <!-- 2. Pomodoro Focus Clock Card -->
-    <div class="card">
-      <h2 id="pomoStatus">Focus Session</h2>
-      <div class="mode-buttons button-group">
-        <button onclick="setPomodoroMode(25, 'Focus Session')">25m Focus</button>
-        <button onclick="setPomodoroMode(5, 'Short Break')">5m Break</button>
-        <button onclick="setPomodoroMode(15, 'Long Break')">15m Break</button>
+    <div class="grid">
+
+      <!-- Streak Tracker -->
+      <div class="card full">
+        <h2>🔥 Day Streak</h2>
+        <div class="streak-display" id="streakCount">0 Days</div>
+        <button onclick="addStreak()">+ Record Productive Day</button>
+        <button onclick="resetStreak()" style="background: #9ca3af;">Reset</button>
       </div>
-      <div class="timer-display" id="pomoDisplay">25:00</div>
-      <div class="button-group">
-        <button id="startBtn" class="btn-primary" onclick="togglePomodoro()">Start</button>
-        <button class="btn-reset" onclick="resetPomodoro()">Reset</button>
+
+      <!-- Goals -->
+      <div class="card">
+        <h2>🎯 Goals</h2>
+
+        <div class="goal" onclick="toggleGoal(this)">
+          <strong>Learn HTML</strong>
+          <div class="progress">
+            <div class="progress-bar" style="width: 60%;"></div>
+          </div>
+        </div>
+
+        <div class="goal" onclick="toggleGoal(this)">
+          <strong>Build my website</strong>
+          <div class="progress">
+            <div class="progress-bar" style="width: 30%;"></div>
+          </div>
+        </div>
       </div>
+
+      <!-- Tasks -->
+      <div class="card">
+        <h2>✅ Tasks</h2>
+
+        <div class="task-input">
+          <input id="taskInput" type="text" placeholder="Add a task...">
+          <button onclick="addTask()">Add</button>
+        </div>
+
+        <ul id="taskList">
+          <li onclick="toggleItem(this)">Study HTML</li>
+          <li onclick="toggleItem(this)">Read for 20 minutes</li>
+          <li onclick="toggleItem(this)">Exercise</li>
+        </ul>
+      </div>
+
+      <!-- Learning -->
+      <div class="card">
+        <h2>📚 Learning</h2>
+
+        <ul>
+          <li onclick="toggleItem(this)">🌐 HTML</li>
+          <li onclick="toggleItem(this)">🎨 CSS</li>
+          <li onclick="toggleItem(this)">⚡ JavaScript</li>
+          <li onclick="toggleItem(this)">🐍 Python</li>
+        </ul>
+      </div>
+
+      <!-- Projects -->
+      <div class="card">
+        <h2>💼 Projects</h2>
+
+        <ul>
+          <li onclick="toggleItem(this)">🏠 Personal Dashboard</li>
+          <li onclick="toggleItem(this)">🌐 My Website</li>
+          <li onclick="toggleItem(this)">💡 New Project Ideas</li>
+        </ul>
+      </div>
+
+      <!-- Reading List -->
+      <div class="card full">
+        <h2>📖 Books to Read</h2>
+
+        <div class="task-input">
+          <input id="bookTitleInput" type="text" placeholder="Book Title...">
+          <input id="bookAuthorInput" type="text" placeholder="Author (optional)...">
+          <button onclick="addBook()">Add Book</button>
+        </div>
+
+        <ul id="bookList"></ul>
+      </div>
+
+      <!-- YouTube Links -->
+      <div class="card full">
+        <h2>▶️ YouTube Links</h2>
+
+        <div class="task-input">
+          <input id="ytTitleInput" type="text" placeholder="Title (e.g. Physics Revision)">
+          <input id="ytUrlInput" type="text" placeholder="Paste YouTube link (https://...)">
+          <button onclick="addYtLink()">Save Link</button>
+        </div>
+
+        <ul id="ytList"></ul>
+      </div>
+
+      <!-- Notes -->
+      <div class="card full">
+        <h2>📝 Notes</h2>
+
+        <textarea id="notes" placeholder="Write your notes here..."></textarea>
+        <br><br>
+        <button onclick="saveNotes()">💾 Save Notes</button>
+      </div>
+
     </div>
+
+    <!-- End of Page CTA Section -->
+    <section class="cta-banner">
+      <h2>Ready to connect or get started?</h2>
+      <div class="cta-group" style="justify-content: center;">
+        <a href="#contact" class="cta-button cta-primary">Book a Call</a>
+        <a href="#portfolio" class="cta-button cta-secondary">View Portfolio</a>
+      </div>
+    </section>
 
   </div>
 
   <script>
-    /* --- Countdown Timer Script --- */
-    const targetInput = document.getElementById('targetDateInput');
-    
-    // Set default target to June 4, 2026 if no date is saved in localStorage
-    let savedDate = localStorage.getItem('dashboardTargetDate');
-    if (!savedDate) {
-      savedDate = "2026-06-04T09:00";
-    }
-    targetInput.value = savedDate;
+    // Verses Array
+    const ayahList = [
+      "\"And Allah would not let your faith be wasted.\" — (Quran 2:143)",
+      "\"So remember Me; I will remember you.\" — (Quran 2:152)",
+      "\"Indeed, with hardship comes ease.\" — (Quran 94:6)",
+      "\"And He found you lost and guided you.\" — (Quran 93:7)",
+      "\"My Lord, increase me in knowledge.\" — (Quran 20:114)"
+    ];
 
-    targetInput.addEventListener('change', (e) => {
-      localStorage.setItem('dashboardTargetDate', e.target.value);
-    });
-
-    function updateCountdown() {
-      const targetTime = new Date(targetInput.value).getTime();
-      const currentTime = new Date().getTime();
-      const difference = targetTime - currentTime;
-
-      if (difference > 0) {
-        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-        document.getElementById('days').innerText = String(days).padStart(2, '0');
-        document.getElementById('hours').innerText = String(hours).padStart(2, '0');
-        document.getElementById('mins').innerText = String(minutes).padStart(2, '0');
-        document.getElementById('secs').innerText = String(seconds).padStart(2, '0');
-      } else {
-        document.getElementById('days').innerText = '00';
-        document.getElementById('hours').innerText = '00';
-        document.getElementById('mins').innerText = '00';
-        document.getElementById('secs').innerText = '00';
-      }
-    }
-    setInterval(updateCountdown, 1000);
-    updateCountdown();
-
-    /* --- Pomodoro Clock Script --- */
-    let pomoTime = 25 * 60;
-    let currentTotalTime = 25 * 60;
-    let pomoTimer = null;
-    let isRunning = false;
-
-    const pomoDisplay = document.getElementById('pomoDisplay');
-    const startBtn = document.getElementById('startBtn');
-    const pomoStatus = document.getElementById('pomoStatus');
-
-    function updatePomoDisplay() {
-      const mins = Math.floor(pomoTime / 60);
-      const secs = pomoTime % 60;
-      const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-      pomoDisplay.innerText = formatted;
-      document.title = isRunning ? `(${formatted}) Study Dashboard` : 'Personal Study Dashboard';
+    // Toggle tick and strike-through
+    function toggleItem(element) {
+      element.classList.toggle("done");
     }
 
-    function togglePomodoro() {
-      if (isRunning) {
-        clearInterval(pomoTimer);
-        startBtn.innerText = 'Start';
-        startBtn.className = 'btn-primary';
-        isRunning = false;
-      } else {
-        isRunning = true;
-        startBtn.innerText = 'Pause';
-        startBtn.className = 'btn-success';
-        pomoTimer = setInterval(() => {
-          if (pomoTime > 0) {
-            pomoTime--;
-            updatePomoDisplay();
-          } else {
-            clearInterval(pomoTimer);
-            alert('Session complete! Take a break.');
-            resetPomodoro();
-          }
-        }, 1000);
+    function toggleGoal(element) {
+      element.style.opacity = element.style.opacity === "0.5" ? "1" : "0.5";
+      element.style.textDecoration = element.style.textDecoration === "line-through" ? "none" : "line-through";
+    }
+
+    // Add Task
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const task = input.value.trim();
+
+      if (task === "") return;
+
+      const li = document.createElement("li");
+      li.textContent = task;
+      li.onclick = function () { toggleItem(this); };
+
+      document.getElementById("taskList").appendChild(li);
+      input.value = "";
+    }
+
+    // Book List Logic
+    function addBook(titleText = null, authorText = null, done = false, isInitialLoad = false) {
+      const titleInput = document.getElementById("bookTitleInput");
+      const authorInput = document.getElementById("bookAuthorInput");
+
+      const title = titleText || titleInput.value.trim();
+      const author = authorText || authorInput.value.trim();
+
+      if (!title) return;
+
+      const li = document.createElement("li");
+      const displayText = author ? `<strong>${title}</strong> — <em>${author}</em>` : `<strong>${title}</strong>`;
+      li.innerHTML = displayText;
+
+      if (done) li.classList.add("done");
+
+      li.onclick = function () {
+        toggleItem(this);
+        saveBooks();
+      };
+
+      document.getElementById("bookList").appendChild(li);
+
+      if (!isInitialLoad) {
+        saveBooks();
+        titleInput.value = "";
+        authorInput.value = "";
       }
     }
 
-    function resetPomodoro() {
-      clearInterval(pomoTimer);
-      isRunning = false;
-      pomoTime = currentTotalTime;
-      startBtn.innerText = 'Start';
-      startBtn.className = 'btn-primary';
-      updatePomoDisplay();
+    function saveBooks() {
+      const books = [];
+      document.querySelectorAll("#bookList li").forEach(li => {
+        const titleEl = li.querySelector("strong");
+        const authorEl = li.querySelector("em");
+        if (titleEl) {
+          books.push({
+            title: titleEl.innerText,
+            author: authorEl ? authorEl.innerText : "",
+            done: li.classList.contains("done")
+          });
+        }
+      });
+      localStorage.setItem("myBooks", JSON.stringify(books));
     }
 
-    function setPomodoroMode(minutes, label) {
-      currentTotalTime = minutes * 60;
-      pomoStatus.innerText = label;
-      resetPomodoro();
+    function loadBooks() {
+      const saved = localStorage.getItem("myBooks");
+      if (saved) {
+        const books = JSON.parse(saved);
+        books.forEach(item => addBook(item.title, item.author, item.done, true));
+      }
     }
 
-    updatePomoDisplay();
+    // Streak Logic
+    let streak = parseInt(localStorage.getItem("myStreak") || "0");
+    function updateStreakDisplay() {
+      document.getElementById("streakCount").textContent = streak + " Days";
+    }
+
+    function addStreak() {
+      streak++;
+      localStorage.setItem("myStreak", streak);
+      updateStreakDisplay();
+    }
+
+    function resetStreak() {
+      streak = 0;
+      localStorage.setItem("myStreak", streak);
+      updateStreakDisplay();
+    }
+
+    // Colors & Theme Logic
+    function changeColor(color) {
+      document.documentElement.style.setProperty('--primary', color);
+      localStorage.setItem("myColor", color);
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
+    }
+
+    // Save & Load Notes
+    function saveNotes() {
+      const notes = document.getElementById("notes").value;
+      localStorage.setItem("myNotes", notes);
+      alert("Notes saved!");
+    }
+
+    // YouTube Link logic
+    function addYtLink(titleText = null, urlText = null, isInitialLoad = false) {
+      const titleInput = document.getElementById("ytTitleInput");
+      const urlInput = document.getElementById("ytUrlInput");
+
+      const title = titleText || titleInput.value.trim();
+      const url = urlText || urlInput.value.trim();
+
+      if (!url) return;
+
+      const formattedUrl = url.startsWith("http://") || url.startsWith("https://") ? url : "https://" + url;
+      const displayTitle = title || formattedUrl;
+
+      const li = document.createElement("li");
+      li.style.cursor = "default";
+      li.innerHTML = `🎥 <strong>${displayTitle}:</strong> <a href="${formattedUrl}" target="_blank" class="yt-link">${formattedUrl}</a>`;
+
+      document.getElementById("ytList").appendChild(li);
+
+      if (!isInitialLoad) {
+        saveYtLinks();
+        titleInput.value = "";
+        urlInput.value = "";
+      }
+    }
+
+    function saveYtLinks() {
+      const links = [];
+      document.querySelectorAll("#ytList li").forEach(li => {
+        const titleEl = li.querySelector("strong");
+        if (titleEl) {
+          const title = titleEl.innerText.replace(":", "");
+          const url = li.querySelector("a").href;
+          links.push({ title, url });
+        }
+      });
+      localStorage.setItem("myYtLinks", JSON.stringify(links));
+    }
+
+    function loadYtLinks() {
+      const saved = localStorage.getItem("myYtLinks");
+      if (saved) {
+        const links = JSON.parse(saved);
+        links.forEach(item => addYtLink(item.title, item.url, true));
+      }
+    }
+
+    // On Load Initialization
+    window.onload = function () {
+      // Set random Ayah
+      const randomIndex = Math.floor(Math.random() * ayahList.length);
+      document.getElementById("dailyAyah").textContent = ayahList[randomIndex];
+
+      // Restore Notes
+      const savedNotes = localStorage.getItem("myNotes");
+      if (savedNotes) document.getElementById("notes").value = savedNotes;
+
+      // Restore Color & Theme
+      const savedColor = localStorage.getItem("myColor");
+      if (savedColor) changeColor(savedColor);
+
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark-mode");
+      }
+
+      updateStreakDisplay();
+      loadBooks();
+      loadYtLinks();
+    };
   </script>
 
 </body>
