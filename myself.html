@@ -783,3 +783,16 @@
     </tbody>
   </table>
 </div>
+  function calculateCountdowns() {
+  const target1 = new Date("2026-06-04T00:00:00");
+  const target2 = new Date("2026-08-04T00:00:00");
+  const now = new Date();
+
+  const diff1 = Math.ceil((target1 - now) / (1000 * 60 * 60 * 24));
+  const diff2 = Math.ceil((target2 - now) / (1000 * 60 * 60 * 24));
+
+  document.getElementById("daysExam1").textContent = (diff1 > 0 ? diff1 : 0) + " Days";
+  document.getElementById("daysExam2").textContent = (diff2 > 0 ? diff2 : 0) + " Days";
+}
+
+// Add calculateCountdowns() inside window.onload
