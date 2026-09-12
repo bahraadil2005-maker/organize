@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -211,21 +212,41 @@
       user-select: none;
       display: flex;
       align-items: center;
+      justify-content: space-between;
       gap: 10px;
     }
 
-    li.done {
+    li .item-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    li.done .item-content {
       text-decoration: line-through;
       opacity: 0.5;
     }
 
-    li::before {
+    li .item-content::before {
       content: "☐";
       font-size: 16px;
     }
 
-    li.done::before {
+    li.done .item-content::before {
       content: "☑";
+    }
+
+    .delete-btn {
+      background: transparent;
+      color: #ef4444;
+      padding: 2px 8px;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    .delete-btn:hover {
+      background: rgba(239, 68, 68, 0.1);
     }
 
     .goal {
@@ -244,7 +265,8 @@
     .progress-bar {
       height: 100%;
       background: var(--primary);
-      width: 60%;
+      width: 0%;
+      transition: width 0.3s ease;
     }
 
     textarea {
@@ -313,6 +335,26 @@
       justify-content: center;
     }
 
+    /* Hydration Tracker Styles */
+    .water-cups {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .water-cup {
+      font-size: 24px;
+      cursor: pointer;
+      opacity: 0.3;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+
+    .water-cup.filled {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
       .full { grid-column: auto; }
@@ -369,9 +411,18 @@
         </div>
       </div>
 
-      <!-- Detailed Subject Tracker -->
+      <!-- Detailed Subject Tracker with Overall Completion Bar -->
       <div class="card full">
         <h2>📚 Subject Coverage Tracker</h2>
+        <div style="margin-bottom: 15px;">
+          <div style="display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 5px;">
+            <span>Overall Study Progress</span>
+            <span id="studyProgressPct">0%</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" id="studyProgressBar"></div>
+          </div>
+        </div>
         <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left;">
           <thead>
             <tr style="border-bottom: 2px solid var(--border);">
@@ -405,8 +456,19 @@
         </table>
       </div>
 
+      <!-- Daily Hydration Tracker -->
+      <div class="card">
+        <h2>💧 Hydration Tracker (Target: 8 Glasses)</h2>
+        <p style="font-size: 13px; opacity: 0.8;">Click glasses as you drink throughout the day:</p>
+        <div class="water-cups" id="waterCupsContainer"></div>
+        <div style="margin-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <span id="waterCount" style="font-weight: bold; color: var(--primary);">0 / 8 Glasses</span>
+          <button onclick="resetWater()" style="padding: 4px 10px; font-size: 12px; background: #9ca3af;">Reset</button>
+        </div>
+      </div>
+
       <!-- Streak Tracker -->
-      <div class="card full">
+      <div class="card">
         <h2>🔥 Day Streak</h2>
         <div class="streak-display" id="streakCount">0 Days</div>
         <button onclick="addStreak()">+ Record Productive Day</button>
@@ -447,7 +509,7 @@
         </div>
       </div>
 
-      <!-- Tasks -->
+      <!-- Persistent Tasks with Deletion -->
       <div class="card">
         <h2>✅ Tasks</h2>
 
@@ -456,11 +518,7 @@
           <button onclick="addTask()">Add</button>
         </div>
 
-        <ul id="taskList">
-          <li onclick="toggleItem(this)">Study HTML</li>
-          <li onclick="toggleItem(this)">Read for 20 minutes</li>
-          <li onclick="toggleItem(this)">Exercise</li>
-        </ul>
+        <ul id="taskList"></ul>
       </div>
 
       <!-- Learning -->
@@ -468,10 +526,10 @@
         <h2>📚 Learning</h2>
 
         <ul>
-          <li onclick="toggleItem(this)">🌐 HTML</li>
-          <li onclick="toggleItem(this)">🎨 CSS</li>
-          <li onclick="toggleItem(this)">⚡ JavaScript</li>
-          <li onclick="toggleItem(this)">🐍 Python</li>
+          <li onclick="toggleItem(this)"><span class="item-content">🌐 HTML</span></li>
+          <li onclick="toggleItem(this)"><span class="item-content">🎨 CSS</span></li>
+          <li onclick="toggleItem(this)"><span class="item-content">⚡ JavaScript</span></li>
+          <li onclick="toggleItem(this)"><span class="item-content">🐍 Python</span></li>
         </ul>
       </div>
 
@@ -480,9 +538,9 @@
         <h2>💼 Projects</h2>
 
         <ul>
-          <li onclick="toggleItem(this)">🏠 Personal Dashboard</li>
-          <li onclick="toggleItem(this)">🌐 My Website</li>
-          <li onclick="toggleItem(this)">💡 New Project Ideas</li>
+          <li onclick="toggleItem(this)"><span class="item-content">🏠 Personal Dashboard</span></li>
+          <li onclick="toggleItem(this)"><span class="item-content">🌐 My Website</span></li>
+          <li onclick="toggleItem(this)"><span class="item-content">💡 New Project Ideas</span></li>
         </ul>
       </div>
 
@@ -547,6 +605,7 @@
     // Toggle tick and strike-through
     function toggleItem(element) {
       element.classList.toggle("done");
+      updateStudyProgress();
     }
 
     function toggleGoal(element) {
@@ -554,19 +613,112 @@
       element.style.textDecoration = element.style.textDecoration === "line-through" ? "none" : "line-through";
     }
 
-    // Add Task
-    function addTask() {
+    /* --- Task Management with Persistence & Deletion --- */
+    function addTask(taskText = null, done = false, isInitialLoad = false) {
       const input = document.getElementById("taskInput");
-      const task = input.value.trim();
+      const text = taskText || input.value.trim();
 
-      if (task === "") return;
+      if (!text) return;
 
       const li = document.createElement("li");
-      li.textContent = task;
-      li.onclick = function () { toggleItem(this); };
+      if (done) li.classList.add("done");
+
+      const contentSpan = document.createElement("span");
+      contentSpan.className = "item-content";
+      contentSpan.textContent = text;
+      contentSpan.onclick = function() {
+        li.classList.toggle("done");
+        saveTasks();
+      };
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "delete-btn";
+      delBtn.innerHTML = "✕";
+      delBtn.title = "Delete Task";
+      delBtn.onclick = function(e) {
+        e.stopPropagation();
+        li.remove();
+        saveTasks();
+      };
+
+      li.appendChild(contentSpan);
+      li.appendChild(delBtn);
 
       document.getElementById("taskList").appendChild(li);
-      input.value = "";
+
+      if (!isInitialLoad) {
+        saveTasks();
+        input.value = "";
+      }
+    }
+
+    function saveTasks() {
+      const tasks = [];
+      document.querySelectorAll("#taskList li").forEach(li => {
+        const text = li.querySelector(".item-content").textContent;
+        tasks.push({
+          text: text,
+          done: li.classList.contains("done")
+        });
+      });
+      localStorage.setItem("myTasks", JSON.stringify(tasks));
+    }
+
+    function loadTasks() {
+      const saved = localStorage.getItem("myTasks");
+      if (saved) {
+        const tasks = JSON.parse(saved);
+        tasks.forEach(t => addTask(t.text, t.done, true));
+      } else {
+        // Default initial tasks if empty
+        addTask("Study HTML", false, true);
+        addTask("Read for 20 minutes", false, true);
+        addTask("Exercise", false, true);
+        saveTasks();
+      }
+    }
+
+    /* --- Hydration Tracker Logic --- */
+    let waterCups = parseInt(localStorage.getItem("myWater") || "0");
+
+    function renderWaterTracker() {
+      const container = document.getElementById("waterCupsContainer");
+      container.innerHTML = "";
+      for (let i = 1; i <= 8; i++) {
+        const cup = document.createElement("span");
+        cup.className = `water-cup ${i <= waterCups ? 'filled' : ''}`;
+        cup.innerHTML = "🥛";
+        cup.onclick = () => setWater(i);
+        container.appendChild(cup);
+      }
+      document.getElementById("waterCount").textContent = `${waterCups} / 8 Glasses`;
+    }
+
+    function setWater(count) {
+      waterCups = (waterCups === count && count === 1) ? 0 : count;
+      localStorage.setItem("myWater", waterCups);
+      renderWaterTracker();
+    }
+
+    function resetWater() {
+      waterCups = 0;
+      localStorage.setItem("myWater", 0);
+      renderWaterTracker();
+    }
+
+    /* --- Overall Study Progress Calculation --- */
+    function updateStudyProgress() {
+      const listItems = document.querySelectorAll(".grid .card ul li");
+      if (listItems.length === 0) return;
+
+      let completed = 0;
+      listItems.forEach(li => {
+        if (li.classList.contains("done")) completed++;
+      });
+
+      const pct = Math.round((completed / listItems.length) * 100);
+      document.getElementById("studyProgressPct").textContent = pct + "%";
+      document.getElementById("studyProgressBar").style.width = pct + "%";
     }
 
     // Book List Logic
@@ -792,10 +944,13 @@
       }
 
       updateStreakDisplay();
+      loadTasks();
       loadBooks();
       loadYtLinks();
+      renderWaterTracker();
       updatePomoDisplay();
       calculateCountdowns();
+      updateStudyProgress();
     };
   </script>
 
