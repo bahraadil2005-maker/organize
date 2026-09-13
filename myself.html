@@ -420,6 +420,17 @@
           Select a subject, write down the specific chapter or lesson, set its status, and add it to your saved timetable.
         </p>
 
+        <!-- Dynamic Overall Completion Progress -->
+        <div style="margin-bottom: 15px;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
+            <span>Overall Timetable Completion</span>
+            <span id="ttCompletionPercentage">0%</span>
+          </div>
+          <div class="progress">
+            <div class="progress-bar" id="ttProgressBar" style="width: 0%;"></div>
+          </div>
+        </div>
+
         <!-- Add New Chapter/Lesson Input Form -->
         <div class="task-input" style="flex-wrap: wrap;">
           <select id="ttSubjectSelect">
@@ -443,6 +454,22 @@
           </select>
 
           <button onclick="addTimetableItem()">+ Add to Timetable</button>
+        </div>
+
+        <!-- Subject Filter Bar -->
+        <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+          <label style="font-size: 13px; font-weight: bold;">Filter by Subject:</label>
+          <select id="ttFilterSelect" onchange="filterTimetable()" style="padding: 6px 10px; font-size: 13px;">
+            <option value="All">All Subjects</option>
+            <option value="Biology">Biology</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Kurdish">Kurdish</option>
+            <option value="English">English</option>
+            <option value="Physics">Physics</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Religion">Religion</option>
+            <option value="Math">Math</option>
+          </select>
         </div>
 
         <!-- Timetable Table -->
@@ -654,6 +681,7 @@
 
       const tr = document.createElement("tr");
       tr.style.borderBottom = "1px solid var(--border)";
+      tr.dataset.subject = subject;
 
       tr.innerHTML = `
         <td style="padding: 10px;"><strong>${subject}</strong></td>
@@ -670,12 +698,42 @@
         saveTimetable();
         chInput.value = "";
       }
+      updateTimetableProgress();
     }
 
     function removeTimetableItem(btn) {
       const tr = btn.closest("tr");
       tr.remove();
       saveTimetable();
+      updateTimetableProgress();
+    }
+
+    function filterTimetable() {
+      const filter = document.getElementById("ttFilterSelect").value;
+      document.querySelectorAll("#timetableBody tr").forEach(tr => {
+        if (filter === "All" || tr.dataset.subject === filter) {
+          tr.style.display = "";
+        } else {
+          tr.style.display = "none";
+        }
+      });
+    }
+
+    function updateTimetableProgress() {
+      const rows = document.querySelectorAll("#timetableBody tr");
+      if (rows.length === 0) {
+        document.getElementById("ttProgressBar").style.width = "0%";
+        document.getElementById("ttCompletionPercentage").innerText = "0%";
+        return;
+      }
+      let completedCount = 0;
+      rows.forEach(tr => {
+        const statusText = tr.children[2].innerText.trim();
+        if (statusText === "Completed") completedCount++;
+      });
+      const pct = Math.round((completedCount / rows.length) * 100);
+      document.getElementById("ttProgressBar").style.width = pct + "%";
+      document.getElementById("ttCompletionPercentage").innerText = pct + "%";
     }
 
     function saveTimetable() {
@@ -698,6 +756,7 @@
       const list = saved ? JSON.parse(saved) : defaultTimetable;
       document.getElementById("timetableBody").innerHTML = "";
       list.forEach(item => addTimetableItem(item.subject, item.chapter, item.status, true));
+      updateTimetableProgress();
     }
 
     /* --- Task Management with Persistence & Deletion --- */
@@ -803,15 +862,30 @@
       if (!title) return;
 
       const li = document.createElement("li");
-      const displayText = author ? `<strong>${title}</strong> — <em>${author}</em>` : `<strong>${title}</strong>`;
-      li.innerHTML = displayText;
+      
+      const contentSpan = document.createElement("span");
+      contentSpan.className = "item-content";
+      contentSpan.innerHTML = author ? `<strong>${title}</strong> — <em>${author}</em>` : `<strong>${title}</strong>`;
 
       if (done) li.classList.add("done");
 
-      li.onclick = function () {
-        toggleItem(this);
+      contentSpan.onclick = function () {
+        li.classList.toggle("done");
         saveBooks();
       };
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "delete-btn";
+      delBtn.innerHTML = "✕";
+      delBtn.title = "Delete Book";
+      delBtn.onclick = function(e) {
+        e.stopPropagation();
+        li.remove();
+        saveBooks();
+      };
+
+      li.appendChild(contentSpan);
+      li.appendChild(delBtn);
 
       document.getElementById("bookList").appendChild(li);
 
@@ -897,7 +971,22 @@
 
       const li = document.createElement("li");
       li.style.cursor = "default";
-      li.innerHTML = `🎥 <strong>${displayTitle}:</strong> <a href="${formattedUrl}" target="_blank" class="yt-link">${formattedUrl}</a>`;
+
+      const contentSpan = document.createElement("span");
+      contentSpan.innerHTML = `🎥 <strong>${displayTitle}:</strong> <a href="${formattedUrl}" target="_blank" class="yt-link">${formattedUrl}</a>`;
+
+      const delBtn = document.createElement("button");
+      delBtn.className = "delete-btn";
+      delBtn.innerHTML = "✕";
+      delBtn.title = "Delete Link";
+      delBtn.onclick = function(e) {
+        e.stopPropagation();
+        li.remove();
+        saveYtLinks();
+      };
+
+      li.appendChild(contentSpan);
+      li.appendChild(delBtn);
 
       document.getElementById("ytList").appendChild(li);
 
@@ -912,9 +1001,10 @@
       const links = [];
       document.querySelectorAll("#ytList li").forEach(li => {
         const titleEl = li.querySelector("strong");
-        if (titleEl) {
+        const linkEl = li.querySelector("a");
+        if (titleEl && linkEl) {
           const title = titleEl.innerText.replace(":", "");
-          const url = li.querySelector("a").href;
+          const url = linkEl.href;
           links.push({ title, url });
         }
       });
