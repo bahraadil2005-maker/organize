@@ -357,6 +357,20 @@
       transform: scale(1.1);
     }
 
+    /* Weather Widget Styles */
+    .weather-box {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .weather-temp {
+      font-size: 36px;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
       .full { grid-column: auto; }
@@ -397,6 +411,19 @@
     </div>
 
     <div class="grid">
+
+      <!-- Weather Widget Card (کارتی کەشوهەوای نوێ) -->
+      <div class="card full">
+        <h2>🌤️ Live Weather</h2>
+        <div class="task-input" style="max-width: 450px; margin-bottom: 10px;">
+          <input id="citySearchInput" type="text" placeholder="Enter city name (e.g. Erbil, London)...">
+          <button onclick="searchCityWeather()">Search</button>
+          <button onclick="getLocationWeather()" style="background: var(--bg); color: var(--text); border: 1px solid var(--border);">📍 Use Location</button>
+        </div>
+        <div id="weatherContent" style="font-size: 15px; opacity: 0.9;">
+          Loading weather data...
+        </div>
+      </div>
 
       <!-- Academic Deadline Counter -->
       <div class="card full">
@@ -649,6 +676,86 @@
     function toggleGoal(element) {
       element.style.opacity = element.style.opacity === "0.5" ? "1" : "0.5";
       element.style.textDecoration = element.style.textDecoration === "line-through" ? "none" : "line-through";
+    }
+
+    /* --- Live Weather Logic --- */
+    const weatherCodes = {
+      0: { text: "Clear Sky", icon: "☀️" },
+      1: { text: "Mainly Clear", icon: "🌤️" },
+      2: { text: "Partly Cloudy", icon: "⛅" },
+      3: { text: "Overcast", icon: "☁️" },
+      45: { text: "Foggy", icon: "🌫️" },
+      48: { text: "Depositing Rime Fog", icon: "🌫️" },
+      51: { text: "Light Drizzle", icon: "🌧️" },
+      61: { text: "Slight Rain", icon: "🌧️" },
+      63: { text: "Moderate Rain", icon: "🌧️" },
+      65: { text: "Heavy Rain", icon: "🌧️" },
+      71: { text: "Slight Snow", icon: "❄️" },
+      80: { text: "Rain Showers", icon: "🌦️" },
+      95: { text: "Thunderstorm", icon: "⛈️" }
+    };
+
+    function fetchWeatherData(lat, lon, cityName = "Your Location") {
+      const container = document.getElementById("weatherContent");
+      container.innerHTML = "Fetching live weather...";
+
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          const current = data.current_weather;
+          const temp = Math.round(current.temperature);
+          const wind = current.windspeed;
+          const codeInfo = weatherCodes[current.weathercode] || { text: "Clear", icon: "🌡️" };
+
+          container.innerHTML = `
+            <div class="weather-box">
+              <span style="font-size: 48px;">${codeInfo.icon}</span>
+              <div>
+                <div class="weather-temp">${temp}°C</div>
+                <div><strong>${cityName}</strong> — ${codeInfo.text}</div>
+                <div style="font-size: 13px; opacity: 0.7; margin-top: 4px;">Wind: ${wind} km/h</div>
+              </div>
+            </div>
+          `;
+        })
+        .catch(() => {
+          container.innerHTML = "⚠️ Unable to load weather data.";
+        });
+    }
+
+    function getLocationWeather() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          pos => fetchWeatherData(pos.coords.latitude, pos.coords.longitude, "Local Weather"),
+          () => searchCityWeather("Erbil") // Default backup city if permission denied
+        );
+      } else {
+        searchCityWeather("Erbil");
+      }
+    }
+
+    function searchCityWeather(overrideCity = null) {
+      const city = overrideCity || document.getElementById("citySearchInput").value.trim();
+      if (!city) return;
+
+      const container = document.getElementById("weatherContent");
+      container.innerHTML = `Searching for ${city}...`;
+
+      fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.results && data.results.length > 0) {
+            const place = data.results[0];
+            fetchWeatherData(place.latitude, place.longitude, `${place.name}, ${place.country_code.toUpperCase()}`);
+          } else {
+            container.innerHTML = `⚠️ City "${city}" not found. Try another city name.`;
+          }
+        })
+        .catch(() => {
+          container.innerHTML = "⚠️ Error searching for city.";
+        });
     }
 
     /* --- Timetable & Detailed Chapter Logic --- */
@@ -1112,6 +1219,7 @@
     // Initializations on page load
     window.onload = function() {
       setDailyAyah();
+      getLocationWeather();
       loadTimetable();
       loadTasks();
       loadBooks();
