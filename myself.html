@@ -64,7 +64,6 @@
       font-size: 15px;
     }
 
-    /* CTA Styles */
     .cta-group {
       display: flex;
       gap: 12px;
@@ -108,7 +107,6 @@
       transform: translateY(-2px);
     }
 
-    /* Page End CTA Banner */
     .cta-banner {
       background: var(--card-bg);
       border: 1px solid var(--border);
@@ -133,7 +131,6 @@
       border-color: var(--border);
     }
 
-    /* Color Theme Selector */
     .controls-bar {
       display: flex;
       gap: 10px;
@@ -297,7 +294,6 @@
       word-break: break-all;
     }
 
-    /* Pomodoro Clock Specific Styles */
     .pomo-card {
       text-align: center;
     }
@@ -337,7 +333,6 @@
       justify-content: center;
     }
 
-    /* Hydration Tracker Styles */
     .water-cups {
       display: flex;
       gap: 8px;
@@ -357,7 +352,6 @@
       transform: scale(1.1);
     }
 
-    /* Weather Widget Styles */
     .weather-box {
       display: flex;
       align-items: center;
@@ -388,7 +382,6 @@
       <h1>👋 Welcome!</h1>
       <p>Organize your goals, tasks, learning, projects and notes.</p>
       
-      <!-- Above the fold CTAs -->
       <div class="cta-group">
         <a href="#contact" class="cta-button cta-primary">Book a Call</a>
         <a href="#portfolio" class="cta-button cta-secondary">View Portfolio</a>
@@ -399,7 +392,6 @@
       </div>
     </header>
 
-    <!-- Dashboard Controls -->
     <div class="controls-bar">
       <span>Theme Accent:</span>
       <div class="color-btn" style="background:#4f46e5" onclick="changeColor('#4f46e5')"></div>
@@ -412,7 +404,6 @@
 
     <div class="grid">
 
-      <!-- Weather Widget Card (کارتی کەشوهەوای نوێ) -->
       <div class="card full">
         <h2>🌤️ Live Weather</h2>
         <div class="task-input" style="max-width: 450px; margin-bottom: 10px;">
@@ -425,7 +416,6 @@
         </div>
       </div>
 
-      <!-- Academic Deadline Counter -->
       <div class="card full">
         <h2>⏳ Key Target Countdowns</h2>
         <div style="display: flex; gap: 20px; flex-wrap: wrap; text-align: center; margin-top: 10px;">
@@ -440,14 +430,12 @@
         </div>
       </div>
 
-      <!-- Interactive Study Timetable & Detailed Chapter/Lesson Tracker -->
       <div class="card full">
         <h2>📅 Chapter & Lesson Timetable Tracker</h2>
         <p style="font-size: 14px; opacity: 0.8; margin-bottom: 15px;">
           Select a subject, write down the specific chapter or lesson, set its status, and add it to your saved timetable.
         </p>
 
-        <!-- Dynamic Overall Completion Progress -->
         <div style="margin-bottom: 15px;">
           <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin-bottom: 5px;">
             <span>Overall Timetable Completion</span>
@@ -458,7 +446,6 @@
           </div>
         </div>
 
-        <!-- Add New Chapter/Lesson Input Form -->
         <div class="task-input" style="flex-wrap: wrap;">
           <select id="ttSubjectSelect">
             <option value="Biology">Biology</option>
@@ -483,7 +470,6 @@
           <button onclick="addTimetableItem()">+ Add to Timetable</button>
         </div>
 
-        <!-- Subject Filter Bar -->
         <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
           <label style="font-size: 13px; font-weight: bold;">Filter by Subject:</label>
           <select id="ttFilterSelect" onchange="filterTimetable()" style="padding: 6px 10px; font-size: 13px;">
@@ -499,7 +485,6 @@
           </select>
         </div>
 
-        <!-- Timetable Table -->
         <div style="overflow-x: auto;">
           <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left;">
             <thead>
@@ -510,14 +495,11 @@
                 <th style="padding: 10px; text-align: right;">Action</th>
               </tr>
             </thead>
-            <tbody id="timetableBody">
-              <!-- Timetable items load dynamically here -->
-            </tbody>
+            <tbody id="timetableBody"></tbody>
           </table>
         </div>
       </div>
 
-      <!-- Daily Hydration Tracker -->
       <div class="card">
         <h2>💧 Hydration Tracker (Target: 8 Glasses)</h2>
         <p style="font-size: 13px; opacity: 0.8;">Click glasses as you drink throughout the day:</p>
@@ -528,7 +510,6 @@
         </div>
       </div>
 
-      <!-- Streak Tracker -->
       <div class="card">
         <h2>🔥 Day Streak</h2>
         <div class="streak-display" id="streakCount">0 Days</div>
@@ -536,7 +517,6 @@
         <button onclick="resetStreak()" style="background: #9ca3af;">Reset</button>
       </div>
 
-      <!-- Pomodoro Focus Timer -->
       <div class="card full pomo-card">
         <h2>⏱️ Focus Pomodoro</h2>
         <div class="pomo-modes">
@@ -551,17 +531,14 @@
         </div>
       </div>
 
-      <!-- Goals -->
       <div class="card">
         <h2>🎯 Goals</h2>
-
         <div class="goal" onclick="toggleGoal(this)">
           <strong>Learn HTML</strong>
           <div class="progress">
             <div class="progress-bar" style="width: 60%;"></div>
           </div>
         </div>
-
         <div class="goal" onclick="toggleGoal(this)">
           <strong>Build my website</strong>
           <div class="progress">
@@ -570,22 +547,17 @@
         </div>
       </div>
 
-      <!-- Persistent Tasks with Deletion -->
       <div class="card">
         <h2>✅ Tasks</h2>
-
         <div class="task-input">
           <input id="taskInput" type="text" placeholder="Add a task...">
           <button onclick="addTask()">Add</button>
         </div>
-
         <ul id="taskList"></ul>
       </div>
 
-      <!-- Learning -->
       <div class="card">
         <h2>📚 Learning</h2>
-
         <ul>
           <li onclick="toggleItem(this)"><span class="item-content">🌐 HTML</span></li>
           <li onclick="toggleItem(this)"><span class="item-content">🎨 CSS</span></li>
@@ -594,10 +566,8 @@
         </ul>
       </div>
 
-      <!-- Projects -->
       <div class="card">
         <h2>💼 Projects</h2>
-
         <ul>
           <li onclick="toggleItem(this)"><span class="item-content">🏠 Personal Dashboard</span></li>
           <li onclick="toggleItem(this)"><span class="item-content">🌐 My Website</span></li>
@@ -605,36 +575,28 @@
         </ul>
       </div>
 
-      <!-- Reading List -->
       <div class="card full">
         <h2>📖 Books to Read</h2>
-
         <div class="task-input">
           <input id="bookTitleInput" type="text" placeholder="Book Title...">
           <input id="bookAuthorInput" type="text" placeholder="Author (optional)...">
           <button onclick="addBook()">Add Book</button>
         </div>
-
         <ul id="bookList"></ul>
       </div>
 
-      <!-- YouTube Links -->
       <div class="card full">
         <h2>▶️ YouTube Links</h2>
-
         <div class="task-input">
           <input id="ytTitleInput" type="text" placeholder="Title (e.g. Physics Revision)">
           <input id="ytUrlInput" type="text" placeholder="Paste YouTube link (https://...)">
           <button onclick="addYtLink()">Save Link</button>
         </div>
-
         <ul id="ytList"></ul>
       </div>
 
-      <!-- Notes -->
       <div class="card full">
         <h2>📝 Notes</h2>
-
         <textarea id="notes" placeholder="Write your notes here..."></textarea>
         <br><br>
         <button onclick="saveNotes()">💾 Save Notes</button>
@@ -642,7 +604,6 @@
 
     </div>
 
-    <!-- End of Page CTA Section -->
     <section class="cta-banner">
       <h2>Ready to connect or get started?</h2>
       <div class="cta-group" style="justify-content: center;">
@@ -654,7 +615,6 @@
   </div>
 
   <script>
-    // Verses Array
     const ayahList = [
       "\"And Allah would not let your faith be wasted.\" — (Quran 2:143)",
       "\"So remember Me; I will remember you.\" — (Quran 2:152)",
@@ -668,7 +628,6 @@
       document.getElementById("dailyAyah").innerText = `📖 ${ayahList[randomIndex]}`;
     }
 
-    // Toggle tick and strike-through
     function toggleItem(element) {
       element.classList.toggle("done");
     }
@@ -676,6 +635,18 @@
     function toggleGoal(element) {
       element.style.opacity = element.style.opacity === "0.5" ? "1" : "0.5";
       element.style.textDecoration = element.style.textDecoration === "line-through" ? "none" : "line-through";
+    }
+
+    /* --- Theme & Accent --- */
+    function changeColor(color) {
+      document.documentElement.style.setProperty('--primary', color);
+      localStorage.setItem('themeColor', color);
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDark = document.body.classList.contains('dark-mode');
+      localStorage.setItem('darkMode', isDark);
     }
 
     /* --- Live Weather Logic --- */
@@ -698,7 +669,6 @@
     function fetchWeatherData(lat, lon, cityName = "Your Location") {
       const container = document.getElementById("weatherContent");
       container.innerHTML = "Fetching live weather...";
-
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`;
 
       fetch(url)
@@ -729,7 +699,7 @@
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           pos => fetchWeatherData(pos.coords.latitude, pos.coords.longitude, "Local Weather"),
-          () => searchCityWeather("Erbil") // Default backup city if permission denied
+          () => searchCityWeather("Erbil")
         );
       } else {
         searchCityWeather("Erbil");
@@ -758,7 +728,24 @@
         });
     }
 
-    /* --- Timetable & Detailed Chapter Logic --- */
+    /* --- Countdown Timer --- */
+    function updateCountdowns() {
+      const now = new Date();
+      const year = now.getFullYear();
+      let target1 = new Date(year, 5, 4); // June 4
+      let target2 = new Date(year, 7, 4); // Aug 4
+
+      if (now > target1) target1.setFullYear(year + 1);
+      if (now > target2) target2.setFullYear(year + 1);
+
+      const diff1 = Math.ceil((target1 - now) / (1000 * 60 * 60 * 24));
+      const diff2 = Math.ceil((target2 - now) / (1000 * 60 * 60 * 24));
+
+      document.getElementById("daysExam1").innerText = `${diff1} Days`;
+      document.getElementById("daysExam2").innerText = `${diff2} Days`;
+    }
+
+    /* --- Timetable Logic --- */
     const defaultTimetable = [
       { subject: "Biology", chapter: "8 Chapters / 23 Sections Coverage", status: "In Progress" },
       { subject: "Kurdish", chapter: "16 Subjects + 15 Pages Memories", status: "In Progress" },
@@ -814,8 +801,7 @@
     }
 
     function removeTimetableItem(btn) {
-      const tr = btn.closest("tr");
-      tr.remove();
+      btn.closest("tr").remove();
       saveTimetable();
       updateTimetableProgress();
     }
@@ -823,11 +809,7 @@
     function filterTimetable() {
       const filter = document.getElementById("ttFilterSelect").value;
       document.querySelectorAll("#timetableBody tr").forEach(tr => {
-        if (filter === "All" || tr.dataset.subject === filter) {
-          tr.style.display = "";
-        } else {
-          tr.style.display = "none";
-        }
+        tr.style.display = (filter === "All" || tr.dataset.subject === filter) ? "" : "none";
       });
     }
 
@@ -840,8 +822,7 @@
       }
       let completedCount = 0;
       rows.forEach(tr => {
-        const statusText = tr.children[2].innerText.trim();
-        if (statusText === "Completed") completedCount++;
+        if (tr.children[2].innerText.trim() === "Completed") completedCount++;
       });
       const pct = Math.round((completedCount / rows.length) * 100);
       document.getElementById("ttProgressBar").style.width = pct + "%";
@@ -871,11 +852,10 @@
       updateTimetableProgress();
     }
 
-    /* --- Task Management with Persistence & Deletion --- */
+    /* --- Task Management --- */
     function addTask(taskText = null, done = false, isInitialLoad = false) {
       const input = document.getElementById("taskInput");
       const text = taskText || input.value.trim();
-
       if (!text) return;
 
       const li = document.createElement("li");
@@ -892,7 +872,6 @@
       const delBtn = document.createElement("button");
       delBtn.className = "delete-btn";
       delBtn.innerHTML = "✕";
-      delBtn.title = "Delete Task";
       delBtn.onclick = function(e) {
         e.stopPropagation();
         li.remove();
@@ -901,7 +880,6 @@
 
       li.appendChild(contentSpan);
       li.appendChild(delBtn);
-
       document.getElementById("taskList").appendChild(li);
 
       if (!isInitialLoad) {
@@ -913,9 +891,8 @@
     function saveTasks() {
       const tasks = [];
       document.querySelectorAll("#taskList li").forEach(li => {
-        const text = li.querySelector(".item-content").textContent;
         tasks.push({
-          text: text,
+          text: li.querySelector(".item-content").textContent,
           done: li.classList.contains("done")
         });
       });
@@ -925,8 +902,7 @@
     function loadTasks() {
       const saved = localStorage.getItem("myTasks");
       if (saved) {
-        const tasks = JSON.parse(saved);
-        tasks.forEach(t => addTask(t.text, t.done, true));
+        JSON.parse(saved).forEach(t => addTask(t.text, t.done, true));
       } else {
         addTask("Study HTML", false, true);
         addTask("Read for 20 minutes", false, true);
@@ -935,7 +911,7 @@
       }
     }
 
-    /* --- Hydration Tracker Logic --- */
+    /* --- Hydration Tracker --- */
     let waterCups = parseInt(localStorage.getItem("myWater") || "0");
 
     function renderWaterTracker() {
@@ -963,24 +939,96 @@
       renderWaterTracker();
     }
 
-    // Book List Logic
+    /* --- Streak Tracker --- */
+    let streak = parseInt(localStorage.getItem("myStreak") || "0");
+
+    function updateStreakDisplay() {
+      document.getElementById("streakCount").innerText = `${streak} Days`;
+    }
+
+    function addStreak() {
+      streak++;
+      localStorage.setItem("myStreak", streak);
+      updateStreakDisplay();
+    }
+
+    function resetStreak() {
+      streak = 0;
+      localStorage.setItem("myStreak", 0);
+      updateStreakDisplay();
+    }
+
+    /* --- Pomodoro Focus Timer --- */
+    let pomoTimer = null;
+    let pomoSeconds = 25 * 60;
+    let isPomoRunning = false;
+
+    function updatePomoDisplay() {
+      const m = String(Math.floor(pomoSeconds / 60)).padStart(2, '0');
+      const s = String(pomoSeconds % 60).padStart(2, '0');
+      document.getElementById("pomoDisplay").innerText = `${m}:${s}`;
+    }
+
+    function setPomodoroMode(minutes, label, btn) {
+      clearInterval(pomoTimer);
+      isPomoRunning = false;
+      document.getElementById("startPomoBtn").innerText = "Start Session";
+      pomoSeconds = minutes * 60;
+      updatePomoDisplay();
+
+      document.querySelectorAll(".pomo-modes button").forEach(b => b.classList.remove("active"));
+      if (btn) btn.classList.add("active");
+    }
+
+    function togglePomodoro() {
+      const btn = document.getElementById("startPomoBtn");
+      if (isPomoRunning) {
+        clearInterval(pomoTimer);
+        isPomoRunning = false;
+        btn.innerText = "Start Session";
+      } else {
+        isPomoRunning = true;
+        btn.innerText = "Pause Session";
+        pomoTimer = setInterval(() => {
+          if (pomoSeconds > 0) {
+            pomoSeconds--;
+            updatePomoDisplay();
+          } else {
+            clearInterval(pomoTimer);
+            isPomoRunning = false;
+            btn.innerText = "Start Session";
+            alert("⏰ Pomodoro session complete!");
+          }
+        }, 1000);
+      }
+    }
+
+    function resetPomodoro() {
+      clearInterval(pomoTimer);
+      isPomoRunning = false;
+      document.getElementById("startPomoBtn").innerText = "Start Session";
+      const activeBtn = document.querySelector(".pomo-modes button.active");
+      if (activeBtn && activeBtn.id === "modeShort") pomoSeconds = 5 * 60;
+      else if (activeBtn && activeBtn.id === "modeLong") pomoSeconds = 15 * 60;
+      else pomoSeconds = 25 * 60;
+      updatePomoDisplay();
+    }
+
+    /* --- Books List --- */
     function addBook(titleText = null, authorText = null, done = false, isInitialLoad = false) {
       const titleInput = document.getElementById("bookTitleInput");
       const authorInput = document.getElementById("bookAuthorInput");
 
       const title = titleText || titleInput.value.trim();
       const author = authorText || authorInput.value.trim();
-
       if (!title) return;
 
       const li = document.createElement("li");
-      
+      if (done) li.classList.add("done");
+
       const contentSpan = document.createElement("span");
       contentSpan.className = "item-content";
       contentSpan.innerHTML = author ? `<strong>${title}</strong> — <em>${author}</em>` : `<strong>${title}</strong>`;
-
-      if (done) li.classList.add("done");
-
       contentSpan.onclick = function () {
         li.classList.toggle("done");
         saveBooks();
@@ -989,7 +1037,6 @@
       const delBtn = document.createElement("button");
       delBtn.className = "delete-btn";
       delBtn.innerHTML = "✕";
-      delBtn.title = "Delete Book";
       delBtn.onclick = function(e) {
         e.stopPropagation();
         li.remove();
@@ -998,7 +1045,6 @@
 
       li.appendChild(contentSpan);
       li.appendChild(delBtn);
-
       document.getElementById("bookList").appendChild(li);
 
       if (!isInitialLoad) {
@@ -1027,85 +1073,26 @@
     function loadBooks() {
       const saved = localStorage.getItem("myBooks");
       if (saved) {
-        const books = JSON.parse(saved);
-        books.forEach(item => addBook(item.title, item.author, item.done, true));
+        JSON.parse(saved).forEach(b => addBook(b.title, b.author, b.done, true));
       }
     }
 
-    // Streak Logic
-    let streak = parseInt(localStorage.getItem("myStreak") || "0");
-    function updateStreakDisplay() {
-      document.getElementById("streakCount").textContent = streak + " Days";
-    }
-
-    function addStreak() {
-      streak++;
-      localStorage.setItem("myStreak", streak);
-      updateStreakDisplay();
-    }
-
-    function resetStreak() {
-      streak = 0;
-      localStorage.setItem("myStreak", streak);
-      updateStreakDisplay();
-    }
-
-    // Colors & Theme Logic
-    function changeColor(color) {
-      document.documentElement.style.setProperty('--primary', color);
-      localStorage.setItem("myColor", color);
-    }
-
-    function toggleDarkMode() {
-      document.body.classList.toggle("dark-mode");
-      localStorage.setItem("darkMode", document.body.classList.contains("dark-mode"));
-    }
-
-    // Save & Load Notes
-    function saveNotes() {
-      const notes = document.getElementById("notes").value;
-      localStorage.setItem("myNotes", notes);
-      alert("Notes saved!");
-    }
-
-    function loadNotes() {
-      const saved = localStorage.getItem("myNotes");
-      if (saved) {
-        document.getElementById("notes").value = saved;
-      }
-    }
-
-    // YouTube Link logic
+    /* --- YouTube Links --- */
     function addYtLink(titleText = null, urlText = null, isInitialLoad = false) {
       const titleInput = document.getElementById("ytTitleInput");
       const urlInput = document.getElementById("ytUrlInput");
 
       const title = titleText || titleInput.value.trim();
       const url = urlText || urlInput.value.trim();
-
-      if (!url) return;
-
-      const formattedUrl = url.startsWith("http://") || url.startsWith("https://") ? url : "https://" + url;
-      const displayTitle = title || formattedUrl;
+      if (!title || !url) return;
 
       const li = document.createElement("li");
-      li.style.cursor = "default";
-
-      const contentSpan = document.createElement("span");
-      contentSpan.innerHTML = `🎥 <strong>${displayTitle}:</strong> <a href="${formattedUrl}" target="_blank" class="yt-link">${formattedUrl}</a>`;
-
-      const delBtn = document.createElement("button");
-      delBtn.className = "delete-btn";
-      delBtn.innerHTML = "✕";
-      delBtn.title = "Delete Link";
-      delBtn.onclick = function(e) {
-        e.stopPropagation();
-        li.remove();
-        saveYtLinks();
-      };
-
-      li.appendChild(contentSpan);
-      li.appendChild(delBtn);
+      li.innerHTML = `
+        <span class="item-content">
+          🎬 <strong>${title}</strong>: <a href="${url}" target="_blank" class="yt-link">${url}</a>
+        </span>
+        <button class="delete-btn" onclick="removeYtLink(this)">✕</button>
+      `;
 
       document.getElementById("ytList").appendChild(li);
 
@@ -1116,15 +1103,18 @@
       }
     }
 
+    function removeYtLink(btn) {
+      btn.closest("li").remove();
+      saveYtLinks();
+    }
+
     function saveYtLinks() {
       const links = [];
       document.querySelectorAll("#ytList li").forEach(li => {
         const titleEl = li.querySelector("strong");
         const linkEl = li.querySelector("a");
         if (titleEl && linkEl) {
-          const title = titleEl.innerText.replace(":", "");
-          const url = linkEl.href;
-          links.push({ title, url });
+          links.push({ title: titleEl.innerText, url: linkEl.href });
         }
       });
       localStorage.setItem("myYtLinks", JSON.stringify(links));
@@ -1133,414 +1123,44 @@
     function loadYtLinks() {
       const saved = localStorage.getItem("myYtLinks");
       if (saved) {
-        const links = JSON.parse(saved);
-        links.forEach(item => addYtLink(item.title, item.url, true));
+        JSON.parse(saved).forEach(item => addYtLink(item.title, item.url, true));
       }
     }
 
-    /* --- Pomodoro Logic --- */
-    let pomoTime = 25 * 60;
-    let pomoTimer = null;
-    let isRunning = false;
-    let currentSessionLabel = "Focus Session";
-
-    function updatePomoDisplay() {
-      const mins = Math.floor(pomoTime / 60);
-      const secs = pomoTime % 60;
-      const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-      document.getElementById("pomoDisplay").innerText = formatted;
-      document.title = isRunning ? `(${formatted}) My Life Dashboard` : 'My Life Dashboard';
+    /* --- Notes --- */
+    function saveNotes() {
+      const text = document.getElementById("notes").value;
+      localStorage.setItem("myNotes", text);
+      alert("💾 Notes saved successfully!");
     }
 
-    function setPomodoroMode(minutes, label, btnElement) {
-      clearInterval(pomoTimer);
-      isRunning = false;
-      pomoTime = minutes * 60;
-      currentSessionLabel = label;
-      
-      document.querySelectorAll(".pomo-modes button").forEach(btn => btn.classList.remove("active"));
-      if (btnElement) btnElement.classList.add("active");
-
-      document.getElementById("startPomoBtn").innerText = "Start Session";
-      updatePomoDisplay();
-    }
-
-    function togglePomodoro() {
-      const btn = document.getElementById("startPomoBtn");
-      if (isRunning) {
-        clearInterval(pomoTimer);
-        btn.innerText = "Resume";
-        isRunning = false;
-      } else {
-        isRunning = true;
-        btn.innerText = "Pause";
-        pomoTimer = setInterval(() => {
-          if (pomoTime > 0) {
-            pomoTime--;
-            updatePomoDisplay();
-          } else {
-            clearInterval(pomoTimer);
-            isRunning = false;
-            btn.innerText = "Start Session";
-            alert(`${currentSessionLabel} is finished! Time for a break or your next focus session.`);
-          }
-        }, 1000);
+    function loadNotes() {
+      const saved = localStorage.getItem("myNotes");
+      if (saved !== null) {
+        document.getElementById("notes").value = saved;
       }
     }
 
-    function resetPomodoro() {
-      clearInterval(pomoTimer);
-      isRunning = false;
-      const activeBtn = document.querySelector(".pomo-modes button.active");
-      if (activeBtn && activeBtn.id === "modeShort") pomoTime = 5 * 60;
-      else if (activeBtn && activeBtn.id === "modeLong") pomoTime = 15 * 60;
-      else pomoTime = 25 * 60;
-      
-      document.getElementById("startPomoBtn").innerText = "Start Session";
-      updatePomoDisplay();
-    }
-
-    /* --- Countdown Logic --- */
-    function updateCountdowns() {
-      const now = new Date();
-      const exam1Date = new Date(now.getFullYear(), 5, 4); // June 4
-      const exam2Date = new Date(now.getFullYear(), 7, 4); // August 4
-
-      if (now > exam1Date) exam1Date.setFullYear(now.getFullYear() + 1);
-      if (now > exam2Date) exam2Date.setFullYear(now.getFullYear() + 1);
-
-      const diff1 = Math.ceil((exam1Date - now) / (1000 * 60 * 60 * 24));
-      const diff2 = Math.ceil((exam2Date - now) / (1000 * 60 * 60 * 24));
-
-      document.getElementById("daysExam1").innerText = `${diff1} Days`;
-      document.getElementById("daysExam2").innerText = `${diff2} Days`;
-    }
-
-    // Initializations on page load
+    /* --- App Initialization --- */
     window.onload = function() {
       setDailyAyah();
-      getLocationWeather();
-      loadTimetable();
       loadTasks();
+      loadTimetable();
       loadBooks();
-      loadNotes();
       loadYtLinks();
+      loadNotes();
       renderWaterTracker();
       updateStreakDisplay();
       updateCountdowns();
+      searchCityWeather("Erbil");
 
-      // Load Saved Theme Accent
-      const savedColor = localStorage.getItem("myColor");
+      const savedColor = localStorage.getItem('themeColor');
       if (savedColor) changeColor(savedColor);
 
-      // Load Saved Dark Mode
-      if (localStorage.getItem("darkMode") === "true") {
-        document.body.classList.add("dark-mode");
+      if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark-mode');
       }
     };
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="ku" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard with Weather</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      background-color: #f4f6f8;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-
-    .weather-card {
-      background: #ffffff;
-      padding: 24px;
-      border-radius: 16px;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      width: 280px;
-      text-align: center;
-    }
-
-    .weather-card h3 {
-      margin-top: 0;
-      color: #1f2937;
-    }
-
-    .temp {
-      font-size: 2.5rem;
-      font-weight: bold;
-      color: #2563eb;
-      margin: 12px 0;
-    }
-
-    .status {
-      color: #6b7280;
-      font-size: 0.95rem;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="weather-card">
-    <h3 id="city-name">کەشوهەوا</h3>
-    <div class="temp" id="temperature">--°C</div>
-    <div class="status" id="weather-desc">بارکردنی زانیاری...</div>
-  </div>
-
-  <script>
-    async function getWeather() {
-      try {
-        // پۆتانی هەولێر (دەتوانیت بگۆڕیت بۆ شاری تر)
-        const response = await fetch(
-          'https://api.open-meteo.com/v1/forecast?latitude=36.19&longitude=44.01&current_weather=true'
-        );
-        const data = await response.json();
-        const temp = Math.round(data.current_weather.temperature);
-        
-        document.getElementById('temperature').innerText = `${temp}°C`;
-        document.getElementById('weather-desc').innerText = "پلەی گەرمی ئێستای هەولێر";
-      } catch (error) {
-        document.getElementById('weather-desc').innerText = "نەتوانرا زانیاری وەربگیرێت";
-      }
-    }
-
-    getWeather();
-  </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daily Affirmation Card</title>
-  <style>
-    :root {
-      --bg-card: #ffffff;
-      --text-main: #2d3748;
-      --text-muted: #718096;
-      --accent-color: #4a90e2;
-      --accent-hover: #357abd;
-      --border-color: #e2e8f0;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background-color: #f7fafc;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-    }
-
-    /* Card Container */
-    .quote-card {
-      background-color: var(--bg-card);
-      border-radius: 12px;
-      padding: 24px 32px;
-      max-width: 480px;
-      width: 90%;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-      border: 1px solid var(--border-color);
-      text-align: center;
-    }
-
-    .quote-title {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: var(--accent-color);
-      margin-bottom: 16px;
-      font-weight: 700;
-    }
-
-    .quote-text {
-      font-size: 1.25rem;
-      line-height: 1.6;
-      color: var(--text-main);
-      font-style: italic;
-      margin-bottom: 12px;
-    }
-
-    .quote-author {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      font-weight: 500;
-      margin-bottom: 24px;
-    }
-
-    /* Action Buttons */
-    .button-group {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin-bottom: 16px;
-    }
-
-    button {
-      background-color: var(--accent-color);
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: background-color 0.2s ease;
-    }
-
-    button:hover {
-      background-color: var(--accent-hover);
-    }
-
-    button.secondary {
-      background-color: transparent;
-      color: var(--text-muted);
-      border: 1px solid var(--border-color);
-    }
-
-    button.secondary:hover {
-      background-color: #edf2f7;
-      color: var(--text-main);
-    }
-
-    /* Form Section (Hidden by default) */
-    .add-quote-form {
-      display: none;
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px dashed var(--border-color);
-      text-align: left;
-    }
-
-    .add-quote-form.active {
-      display: block;
-    }
-
-    .form-group {
-      margin-bottom: 12px;
-    }
-
-    .form-group label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-
-    .form-group input, .form-group textarea {
-      width: 100%;
-      padding: 8px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-family: inherit;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      height: 60px;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="quote-card">
-    <div class="quote-title">Daily Inspiration</div>
-    <div class="quote-text" id="quoteDisplay">"Loading quote..."</div>
-    <div class="quote-author" id="authorDisplay"></div>
-
-    <div class="button-group">
-      <button onclick="getRandomQuote()">New Quote</button>
-      <button class="secondary" onclick="toggleForm()">+ Add Custom</button>
-    </div>
-
-    <!-- Custom Quote Form -->
-    <div class="add-quote-form" id="quoteForm">
-      <div class="form-group">
-        <label for="customQuote">Affirmation / Quote:</label>
-        <textarea id="customQuote" placeholder="Enter your text here..."></textarea>
-      </div>
-      <div class="form-group">
-        <label for="customAuthor">Author (Optional):</label>
-        <input type="text" id="customAuthor" placeholder="e.g., Self, Marcus Aurelius">
-      </div>
-      <button onclick="saveCustomQuote()" style="width: 100%;">Save Quote</button>
-    </div>
-  </div>
-
-  <script>
-    // Default starter quotes
-    const defaultQuotes = [
-      { text: "Small steps every day lead to big results over time.", author: "Daily Reminder" },
-      { text: "Focus on progress, not perfection.", author: "Personal Mindset" },
-      { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
-      { text: "Your future is created by what you do today, not tomorrow.", author: "Robert Kiyosaki" }
-    ];
-
-    // Load custom quotes from localStorage or initialize empty array
-    let customQuotes = JSON.parse(localStorage.getItem('myCustomQuotes')) || [];
-
-    // Combine default and custom quotes
-    function getAllQuotes() {
-      return [...defaultQuotes, ...customQuotes];
-    }
-
-    // Display a random quote
-    function getRandomQuote() {
-      const allQuotes = getAllQuotes();
-      const randomIndex = Math.floor(Math.random() * allQuotes.length);
-      const selected = allQuotes[randomIndex];
-
-      document.getElementById('quoteDisplay').textContent = `"${selected.text}"`;
-      document.getElementById('authorDisplay').textContent = selected.author ? `— ${selected.author}` : '';
-    }
-
-    // Toggle the form visibility
-    function toggleForm() {
-      const form = document.getElementById('quoteForm');
-      form.classList.toggle('active');
-    }
-
-    // Save a new quote to localStorage
-    function saveCustomQuote() {
-      const textInput = document.getElementById('customQuote').value.trim();
-      const authorInput = document.getElementById('customAuthor').value.trim();
-
-      if (!textInput) {
-        alert("Please write a quote first!");
-        return;
-      }
-
-      const newQuote = {
-        text: textInput,
-        author: authorInput || "Myself"
-      };
-
-      // Add to custom array and save
-      customQuotes.push(newQuote);
-      localStorage.setItem('myCustomQuotes', JSON.stringify(customQuotes));
-
-      // Display the newly added quote immediately
-      document.getElementById('quoteDisplay').textContent = `"${newQuote.text}"`;
-      document.getElementById('authorDisplay').textContent = `— ${newQuote.author}`;
-
-      // Reset form and close it
-      document.getElementById('customQuote').value = '';
-      document.getElementById('customAuthor').value = '';
-      toggleForm();
-    }
-
-    // Load initial quote on page load
-    getRandomQuote();
   </script>
 </body>
 </html>
