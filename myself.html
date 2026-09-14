@@ -1164,3 +1164,232 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Affirmation Card</title>
+  <style>
+    :root {
+      --bg-card: #ffffff;
+      --text-main: #2d3748;
+      --text-muted: #718096;
+      --accent-color: #4a90e2;
+      --accent-hover: #357abd;
+      --border-color: #e2e8f0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f7fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    /* Card Container */
+    .quote-card {
+      background-color: var(--bg-card);
+      border-radius: 12px;
+      padding: 24px 32px;
+      max-width: 480px;
+      width: 90%;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .quote-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      color: var(--accent-color);
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    .quote-text {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      color: var(--text-main);
+      font-style: italic;
+      margin-bottom: 12px;
+    }
+
+    .quote-author {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 24px;
+    }
+
+    /* Action Buttons */
+    .button-group {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    button {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: var(--accent-hover);
+    }
+
+    button.secondary {
+      background-color: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+    }
+
+    button.secondary:hover {
+      background-color: #edf2f7;
+      color: var(--text-main);
+    }
+
+    /* Form Section (Hidden by default) */
+    .add-quote-form {
+      display: none;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px dashed var(--border-color);
+      text-align: left;
+    }
+
+    .add-quote-form.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      height: 60px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quote-card">
+    <div class="quote-title">Daily Inspiration</div>
+    <div class="quote-text" id="quoteDisplay">"Loading quote..."</div>
+    <div class="quote-author" id="authorDisplay"></div>
+
+    <div class="button-group">
+      <button onclick="getRandomQuote()">New Quote</button>
+      <button class="secondary" onclick="toggleForm()">+ Add Custom</button>
+    </div>
+
+    <!-- Custom Quote Form -->
+    <div class="add-quote-form" id="quoteForm">
+      <div class="form-group">
+        <label for="customQuote">Affirmation / Quote:</label>
+        <textarea id="customQuote" placeholder="Enter your text here..."></textarea>
+      </div>
+      <div class="form-group">
+        <label for="customAuthor">Author (Optional):</label>
+        <input type="text" id="customAuthor" placeholder="e.g., Self, Marcus Aurelius">
+      </div>
+      <button onclick="saveCustomQuote()" style="width: 100%;">Save Quote</button>
+    </div>
+  </div>
+
+  <script>
+    // Default starter quotes
+    const defaultQuotes = [
+      { text: "Small steps every day lead to big results over time.", author: "Daily Reminder" },
+      { text: "Focus on progress, not perfection.", author: "Personal Mindset" },
+      { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+      { text: "Your future is created by what you do today, not tomorrow.", author: "Robert Kiyosaki" }
+    ];
+
+    // Load custom quotes from localStorage or initialize empty array
+    let customQuotes = JSON.parse(localStorage.getItem('myCustomQuotes')) || [];
+
+    // Combine default and custom quotes
+    function getAllQuotes() {
+      return [...defaultQuotes, ...customQuotes];
+    }
+
+    // Display a random quote
+    function getRandomQuote() {
+      const allQuotes = getAllQuotes();
+      const randomIndex = Math.floor(Math.random() * allQuotes.length);
+      const selected = allQuotes[randomIndex];
+
+      document.getElementById('quoteDisplay').textContent = `"${selected.text}"`;
+      document.getElementById('authorDisplay').textContent = selected.author ? `— ${selected.author}` : '';
+    }
+
+    // Toggle the form visibility
+    function toggleForm() {
+      const form = document.getElementById('quoteForm');
+      form.classList.toggle('active');
+    }
+
+    // Save a new quote to localStorage
+    function saveCustomQuote() {
+      const textInput = document.getElementById('customQuote').value.trim();
+      const authorInput = document.getElementById('customAuthor').value.trim();
+
+      if (!textInput) {
+        alert("Please write a quote first!");
+        return;
+      }
+
+      const newQuote = {
+        text: textInput,
+        author: authorInput || "Myself"
+      };
+
+      // Add to custom array and save
+      customQuotes.push(newQuote);
+      localStorage.setItem('myCustomQuotes', JSON.stringify(customQuotes));
+
+      // Display the newly added quote immediately
+      document.getElementById('quoteDisplay').textContent = `"${newQuote.text}"`;
+      document.getElementById('authorDisplay').textContent = `— ${newQuote.author}`;
+
+      // Reset form and close it
+      document.getElementById('customQuote').value = '';
+      document.getElementById('customAuthor').value = '';
+      toggleForm();
+    }
+
+    // Load initial quote on page load
+    getRandomQuote();
+  </script>
+</body>
+</html>
