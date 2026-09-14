@@ -1393,3 +1393,250 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Learning & Life Dashboard</title>
+    <style>
+        :root {
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --primary-color: #4a90e2;
+            --accent-color: #e74c3c;
+            --border-radius: 12px;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .card h2 {
+            margin-top: 0;
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 8px;
+        }
+
+        /* Pomodoro Timer */
+        .timer-display {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button.reset {
+            background-color: var(--accent-color);
+        }
+
+        /* Lists and Inputs */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-container">
+    <!-- Pomodoro Clock -->
+    <div class="card">
+        <h2>⏱️ Pomodoro Timer</h2>
+        <div class="timer-display" id="timer">25:00</div>
+        <div class="controls">
+            <button onclick="startTimer()">Start</button>
+            <button onclick="pauseTimer()">Pause</button>
+            <button class="reset" onclick="resetTimer()">Reset</button>
+        </div>
+    </div>
+
+    <!-- Reading List -->
+    <div class="card">
+        <h2>📚 Reading Tracker</h2>
+        <div class="input-group">
+            <input type="text" id="bookInput" placeholder="Add book title...">
+            <button onclick="addItem('bookInput', 'bookList', 'books')">Add</button>
+        </div>
+        <ul id="bookList"></ul>
+    </div>
+
+    <!-- YouTube & Learning Links -->
+    <div class="card">
+        <h2>📺 Study Links / Videos</h2>
+        <div class="input-group">
+            <input type="text" id="linkInput" placeholder="Add video title or URL...">
+            <button onclick="addItem('linkInput', 'linkList', 'links')">Add</button>
+        </div>
+        <ul id="linkList"></ul>
+    </div>
+
+    <!-- Quick Notes -->
+    <div class="card" style="grid-column: 1 / -1;">
+        <h2>📝 Notes & Thoughts</h2>
+        <textarea id="notesArea" placeholder="Write your ideas, updates, or reminders here..." oninput="saveNotes()"></textarea>
+    </div>
+</div>
+
+<script>
+    /* --- Pomodoro Logic --- */
+    let timeLeft = 25 * 60;
+    let timerId = null;
+
+    function updateTimerDisplay() {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timer').textContent = 
+            `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function startTimer() {
+        if (timerId !== null) return;
+        timerId = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateTimerDisplay();
+            } else {
+                clearInterval(timerId);
+                timerId = null;
+                alert('Time for a break!');
+            }
+        }, 1000);
+    }
+
+    function pauseTimer() {
+        clearInterval(timerId);
+        timerId = null;
+    }
+
+    function resetTimer() {
+        pauseTimer();
+        timeLeft = 25 * 60;
+        updateTimerDisplay();
+    }
+
+    /* --- List Management & LocalStorage --- */
+    function loadData(storageKey, listId) {
+        const items = JSON.parse(localStorage.getItem(storageKey)) || [];
+        const ul = document.getElementById(listId);
+        ul.innerHTML = '';
+        items.forEach((item, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span>${item}</span> <button style="padding:4px 8px; font-size:12px;" onclick="removeItem('${storageKey}', ${index}, '${listId}')">✕</button>`;
+            ul.appendChild(li);
+        });
+    }
+
+    function addItem(inputId, listId, storageKey) {
+        const input = document.getElementById(inputId);
+        const value = input.value.trim();
+        if (!value) return;
+
+        const items = JSON.parse(localStorage.getItem(storageKey)) || [];
+        items.push(value);
+        localStorage.setItem(storageKey, JSON.stringify(items));
+        input.value = '';
+        loadData(storageKey, listId);
+    }
+
+    function removeItem(storageKey, index, listId) {
+        const items = JSON.parse(localStorage.getItem(storageKey)) || [];
+        items.splice(index, 1);
+        localStorage.setItem(storageKey, JSON.stringify(items));
+        loadData(storageKey, listId);
+    }
+
+    /* --- Notes Persistence --- */
+    function saveNotes() {
+        const text = document.getElementById('notesArea').value;
+        localStorage.setItem('userNotes', text);
+    }
+
+    function loadNotes() {
+        const savedText = localStorage.getItem('userNotes') || '';
+        document.getElementById('notesArea').value = savedText;
+    }
+
+    // Initialize page data
+    window.onload = () => {
+        loadData('books', 'bookList');
+        loadData('links', 'linkList');
+        loadNotes();
+    };
+</script>
+
+</body>
+</html>
