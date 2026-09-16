@@ -64,7 +64,6 @@
       font-size: 15px;
     }
 
-    /* --- New Quote Card Styles --- */
     .quote-card {
       margin-top: 15px;
       padding: 16px;
@@ -418,7 +417,6 @@
       color: var(--primary);
     }
 
-    /* --- Ambient Sound Player Styles --- */
     .ambient-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -466,6 +464,30 @@
       border-radius: 6px;
     }
 
+    .status-badge {
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* --- New Random Picker Styles --- */
+    .random-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: var(--bg);
+      border-radius: 10px;
+      border: 1px dashed var(--primary);
+      text-align: center;
+    }
+
+    .random-result {
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary);
+      margin-top: 10px;
+    }
+
     @media (max-width: 700px) {
       .grid { grid-template-columns: 1fr; }
       .ambient-grid { grid-template-columns: 1fr; }
@@ -493,7 +515,6 @@
         📖 Loading daily verse...
       </div>
 
-      <!-- New Daily Inspiration / Quote Card -->
       <div class="quote-card">
         <h3>💡 Daily Inspiration</h3>
         <div class="quote-content" id="quoteText">"Success is not final, failure is not fatal: it is the courage to continue that counts."</div>
@@ -516,6 +537,24 @@
     </div>
 
     <div class="grid">
+
+      <!-- NEW: Random Generator / Decision Maker -->
+      <div class="card full">
+        <h2>🎲 Pick What to Do Next (Random Pick)</h2>
+        <p style="font-size: 14px; opacity: 0.8;">Can't decide what to study or do next? Pick a category and let the dashboard decide randomly!</p>
+        <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+          <select id="randomSourceSelect" style="flex: 1; min-width: 180px;">
+            <option value="tasks">Pending Tasks</option>
+            <option value="books">Books to Read</option>
+            <option value="yt">Saved YouTube Links</option>
+          </select>
+          <button onclick="pickRandomItem()">🎲 Pick Random Item</button>
+        </div>
+        <div class="random-box">
+          <div style="font-size: 13px; opacity: 0.7;">Selected Item:</div>
+          <div class="random-result" id="randomResultText">Click the button above!</div>
+        </div>
+      </div>
 
       <div class="card full">
         <h2>🌤️ Live Weather</h2>
@@ -543,7 +582,6 @@
         </div>
       </div>
 
-      <!-- NEW: Ambient Sound Player -->
       <div class="card full">
         <h2>🎧 Ambient Sound Player</h2>
         <p style="font-size: 13px; opacity: 0.8; margin-bottom: 10px;">Play relaxing background sounds for better focus while studying or reading.</p>
@@ -788,7 +826,7 @@
       document.getElementById("dailyAyah").innerText = `📖 ${ayahList[randomIndex]}`;
     }
 
-    /* --- New Quote Card Logic --- */
+    /* --- Quote Logic --- */
     const quotesList = [
       { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
       { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
@@ -818,6 +856,37 @@
         const quote = JSON.parse(saved);
         document.getElementById("quoteText").innerText = quote.text;
         document.getElementById("quoteAuthor").innerText = quote.author;
+      }
+    }
+
+    /* --- Random Pick Logic --- */
+    function pickRandomItem() {
+      const source = document.getElementById("randomSourceSelect").value;
+      const resultDisplay = document.getElementById("randomResultText");
+
+      if (source === "tasks") {
+        const activeTasks = tasks.filter(t => !t.done);
+        if (activeTasks.length === 0) {
+          resultDisplay.innerText = "No active tasks found! Add some first.";
+        } else {
+          const item = activeTasks[Math.floor(Math.random() * activeTasks.length)];
+          resultDisplay.innerText = `📌 Task: ${item.text}`;
+        }
+      } else if (source === "books") {
+        const activeBooks = books.filter(b => !b.done);
+        if (activeBooks.length === 0) {
+          resultDisplay.innerText = "No unread books found! Add some first.";
+        } else {
+          const item = activeBooks[Math.floor(Math.random() * activeBooks.length)];
+          resultDisplay.innerText = `📖 Book: ${item.title} ${item.author ? `(by ${item.author})` : ''}`;
+        }
+      } else if (source === "yt") {
+        if (ytLinks.length === 0) {
+          resultDisplay.innerText = "No saved YouTube links found!";
+        } else {
+          const item = ytLinks[Math.floor(Math.random() * ytLinks.length)];
+          resultDisplay.innerText = `▶️ Video: ${item.title}`;
+        }
       }
     }
 
@@ -1018,170 +1087,311 @@
       { subject: "Religion", chapter: "Full Exam Preparation", status: "In Progress" }
     ];
 
-    function getStatusBadge(status) {
-      let color = "#475569";
-      if (status === "Completed") color = "#059669";
-      if (status === "In Progress") color = "#2563eb";
-      if (status === "2nd Term Focus") color = "#dc2626";
-      if (status === "Not Started") color = "#d97706";
+    let timetableItems = JSON.parse(localStorage.getItem('timetableItems')) || defaultTimetable;
 
-      return `<span style="color: ${color}; font-weight: bold;">${status}</span>`;
+    function getStatusBadge(status) {
+      if (status === 'Completed') return '<span class="status-badge" style="background:#d1fae5; color:#065f46;">Completed</span>';
+      if (status === 'In Progress') return '<span class="status-badge" style="background:#fef3c7; color:#92400e;">In Progress</span>';
+      if (status === '2nd Term Focus') return '<span class="status-badge" style="background:#e0e7ff; color:#3730a3;">2nd Term Focus</span>';
+      return '<span class="status-badge" style="background:#f3f4f6; color:#1f2937;">Not Started</span>';
     }
 
-    function addTimetableItem(subj = null, chText = null, stat = null, isInitialLoad = false) {
-      const subjSelect = document.getElementById("ttSubjectSelect");
-      const chInput = document.getElementById("ttChapterInput");
-      const statSelect = document.getElementById("ttStatusSelect");
+    function renderTimetable() {
+      const filter = document.getElementById("ttFilterSelect").value;
+      const tbody = document.getElementById("timetableBody");
+      tbody.innerHTML = "";
 
-      const subject = subj || subjSelect.value;
-      const chapter = chText || chInput.value.trim();
-      const status = stat || statSelect.value;
+      let completedCount = 0;
+
+      timetableItems.forEach((item, index) => {
+        if (item.status === 'Completed') completedCount++;
+
+        if (filter !== "All" && item.subject !== filter) return;
+
+        const row = document.createElement("tr");
+        row.style.borderBottom = "1px solid var(--border)";
+        row.innerHTML = `
+          <td style="padding: 10px; font-weight: bold;">${item.subject}</td>
+          <td style="padding: 10px;">${item.chapter}</td>
+          <td style="padding: 10px;">${getStatusBadge(item.status)}</td>
+          <td style="padding: 10px; text-align: right;">
+            <button class="delete-btn" onclick="deleteTimetableItem(${index})">✕</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+
+      const percentage = timetableItems.length ? Math.round((completedCount / timetableItems.length) * 100) : 0;
+      document.getElementById("ttCompletionPercentage").innerText = `${percentage}%`;
+      document.getElementById("ttProgressBar").style.width = `${percentage}%`;
+
+      localStorage.setItem('timetableItems', JSON.stringify(timetableItems));
+    }
+
+    function addTimetableItem() {
+      const subject = document.getElementById("ttSubjectSelect").value;
+      const chapter = document.getElementById("ttChapterInput").value.trim();
+      const status = document.getElementById("ttStatusSelect").value;
 
       if (!chapter) return;
 
-      const tr = document.createElement("tr");
-      tr.style.borderBottom = "1px solid var(--border)";
-      tr.dataset.subject = subject;
-
-      tr.innerHTML = `
-        <td style="padding: 10px;"><strong>${subject}</strong></td>
-        <td style="padding: 10px;">${chapter}</td>
-        <td style="padding: 10px;">${getStatusBadge(status)}</td>
-        <td style="padding: 10px; text-align: right;">
-          <button class="delete-btn" title="Remove Entry" onclick="removeTimetableItem(this)">✕</button>
-        </td>
-      `;
-
-      document.getElementById("timetableBody").appendChild(tr);
-
-      if (!isInitialLoad) {
-        saveTimetable();
-        chInput.value = "";
-      }
-      updateTimetableProgress();
+      timetableItems.push({ subject, chapter, status });
+      document.getElementById("ttChapterInput").value = "";
+      renderTimetable();
     }
 
-    function removeTimetableItem(btn) {
-      btn.closest("tr").remove();
-      saveTimetable();
-      updateTimetableProgress();
+    function deleteTimetableItem(index) {
+      timetableItems.splice(index, 1);
+      renderTimetable();
     }
 
     function filterTimetable() {
-      const filter = document.getElementById("ttFilterSelect").value;
-      document.querySelectorAll("#timetableBody tr").forEach(tr => {
-        tr.style.display = (filter === "All" || tr.dataset.subject === filter) ? "" : "none";
-      });
+      renderTimetable();
     }
 
-    function updateTimetableProgress() {
-      const rows = document.querySelectorAll("#timetableBody tr");
-      if (rows.length === 0) {
-        document.getElementById("ttProgressBar").style.width = "0%";
-        document.getElementById("ttCompletionPercentage").innerText = "0%";
-        return;
+    /* --- Hydration Tracker --- */
+    let waterGlasses = parseInt(localStorage.getItem('waterGlasses')) || 0;
+
+    function renderWater() {
+      const container = document.getElementById("waterCupsContainer");
+      container.innerHTML = "";
+      for (let i = 0; i < 8; i++) {
+        const cup = document.createElement("span");
+        cup.className = `water-cup ${i < waterGlasses ? 'filled' : ''}`;
+        cup.innerText = "🥛";
+        cup.onclick = () => {
+          waterGlasses = i + 1;
+          localStorage.setItem('waterGlasses', waterGlasses);
+          renderWater();
+        };
+        container.appendChild(cup);
       }
-      let completedCount = 0;
-      rows.forEach(tr => {
-        if (tr.children[2].innerText.trim() === "Completed") completedCount++;
+      document.getElementById("waterCount").innerText = `${waterGlasses} / 8 Glasses`;
+    }
+
+    function resetWater() {
+      waterGlasses = 0;
+      localStorage.setItem('waterGlasses', 0);
+      renderWater();
+    }
+
+    /* --- Day Streak --- */
+    let streak = parseInt(localStorage.getItem('streakCount')) || 0;
+
+    function renderStreak() {
+      document.getElementById("streakCount").innerText = `${streak} Days`;
+    }
+
+    function addStreak() {
+      streak++;
+      localStorage.setItem('streakCount', streak);
+      renderStreak();
+    }
+
+    function resetStreak() {
+      streak = 0;
+      localStorage.setItem('streakCount', 0);
+      renderStreak();
+    }
+
+    /* --- Pomodoro --- */
+    let pomoTime = 25 * 60;
+    let pomoInterval = null;
+    let isPomoRunning = false;
+
+    function updatePomoDisplay() {
+      const mins = Math.floor(pomoTime / 60).toString().padStart(2, '0');
+      const secs = (pomoTime % 60).toString().padStart(2, '0');
+      document.getElementById("pomoDisplay").innerText = `${mins}:${secs}`;
+    }
+
+    function setPomodoroMode(mins, label, btn) {
+      clearInterval(pomoInterval);
+      isPomoRunning = false;
+      document.getElementById("startPomoBtn").innerText = "Start Session";
+      pomoTime = mins * 60;
+      updatePomoDisplay();
+
+      document.querySelectorAll(".pomo-modes button").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+    }
+
+    function togglePomodoro() {
+      const btn = document.getElementById("startPomoBtn");
+      if (isPomoRunning) {
+        clearInterval(pomoInterval);
+        isPomoRunning = false;
+        btn.innerText = "Start Session";
+      } else {
+        isPomoRunning = true;
+        btn.innerText = "Pause";
+        pomoInterval = setInterval(() => {
+          if (pomoTime > 0) {
+            pomoTime--;
+            updatePomoDisplay();
+          } else {
+            clearInterval(pomoInterval);
+            isPomoRunning = false;
+            btn.innerText = "Start Session";
+            alert("⏰ Time is up!");
+          }
+        }, 1000);
+      }
+    }
+
+    function resetPomodoro() {
+      clearInterval(pomoInterval);
+      isPomoRunning = false;
+      document.getElementById("startPomoBtn").innerText = "Start Session";
+      const activeBtn = document.querySelector(".pomo-modes button.active");
+      if (activeBtn.id === "modeShort") pomoTime = 5 * 60;
+      else if (activeBtn.id === "modeLong") pomoTime = 15 * 60;
+      else pomoTime = 25 * 60;
+      updatePomoDisplay();
+    }
+
+    /* --- Task List --- */
+    let tasks = JSON.parse(localStorage.getItem('taskListData')) || [];
+
+    function renderTasks() {
+      const list = document.getElementById("taskList");
+      list.innerHTML = "";
+      tasks.forEach((task, idx) => {
+        const li = document.createElement("li");
+        if (task.done) li.classList.add("done");
+        li.innerHTML = `
+          <span class="item-content" onclick="toggleTask(${idx})">${task.text}</span>
+          <button class="delete-btn" onclick="deleteTask(${idx})">✕</button>
+        `;
+        list.appendChild(li);
       });
-      const pct = Math.round((completedCount / rows.length) * 100);
-      document.getElementById("ttProgressBar").style.width = pct + "%";
-      document.getElementById("ttCompletionPercentage").innerText = pct + "%";
+      localStorage.setItem('taskListData', JSON.stringify(tasks));
     }
 
-    function saveTimetable() {
-      const items = [];
-      document.querySelectorAll("#timetableBody tr").forEach(tr => {
-        const tds = tr.querySelectorAll("td");
-        if (tds.length >= 3) {
-          items.push({
-            subject: tds[0].innerText.trim(),
-            chapter: tds[1].innerText.trim(),
-            status: tds[2].innerText.trim()
-          });
-        }
-      });
-      localStorage.setItem("myTimetable", JSON.stringify(items));
-    }
-
-    function loadTimetable() {
-      const saved = localStorage.getItem("myTimetable");
-      const list = saved ? JSON.parse(saved) : defaultTimetable;
-      document.getElementById("timetableBody").innerHTML = "";
-      list.forEach(item => addTimetableItem(item.subject, item.chapter, item.status, true));
-      updateTimetableProgress();
-    }
-
-    /* --- Task Management --- */
-    function addTask(taskText = null, done = false, isInitialLoad = false) {
+    function addTask() {
       const input = document.getElementById("taskInput");
-      const text = taskText || input.value.trim();
+      const text = input.value.trim();
       if (!text) return;
-
-      const li = document.createElement("li");
-      if (done) li.classList.add("done");
-
-      const contentSpan = document.createElement("span");
-      contentSpan.className = "item-content";
-      contentSpan.textContent = text;
-      contentSpan.onclick = function() {
-        li.classList.toggle("done");
-        saveTasks();
-      };
-
-      const delBtn = document.createElement("button");
-      delBtn.className = "delete-btn";
-      delBtn.innerHTML = "✕";
-      delBtn.onclick = function(e) {
-        e.stopPropagation();
-        li.remove();
-        saveTasks();
-      };
-
-      li.appendChild(contentSpan);
-      li.appendChild(delBtn);
-      document.getElementById("taskList").appendChild(li);
-
-      if (!isInitialLoad) {
-        saveTasks();
-        input.value = "";
-      }
+      tasks.push({ text, done: false });
+      input.value = "";
+      renderTasks();
     }
 
-    function saveTasks() {
-      const tasks = [];
-      document.querySelectorAll("#taskList li").forEach(li => {
-        tasks.push({
-          text: li.querySelector(".item-content").textContent,
-          done: li.classList.contains("done")
-        });
+    function toggleTask(idx) {
+      tasks[idx].done = !tasks[idx].done;
+      renderTasks();
+    }
+
+    function deleteTask(idx) {
+      tasks.splice(idx, 1);
+      renderTasks();
+    }
+
+    /* --- Books --- */
+    let books = JSON.parse(localStorage.getItem('bookListData')) || [];
+
+    function renderBooks() {
+      const list = document.getElementById("bookList");
+      list.innerHTML = "";
+      books.forEach((book, idx) => {
+        const li = document.createElement("li");
+        if (book.done) li.classList.add("done");
+        li.innerHTML = `
+          <span class="item-content" onclick="toggleBook(${idx})">${book.title} ${book.author ? `<small style="opacity:0.7;">by ${book.author}</small>` : ''}</span>
+          <button class="delete-btn" onclick="deleteBook(${idx})">✕</button>
+        `;
+        list.appendChild(li);
       });
-      localStorage.setItem("myTasks", JSON.stringify(tasks));
+      localStorage.setItem('bookListData', JSON.stringify(books));
     }
 
-    function loadTasks() {
-      const saved = localStorage.getItem("myTasks");
-      if (saved) {
-        JSON.parse(saved).forEach(t => addTask(t.text, t.done, true));
-      }
+    function addBook() {
+      const title = document.getElementById("bookTitleInput").value.trim();
+      const author = document.getElementById("bookAuthorInput").value.trim();
+      if (!title) return;
+      books.push({ title, author, done: false });
+      document.getElementById("bookTitleInput").value = "";
+      document.getElementById("bookAuthorInput").value = "";
+      renderBooks();
     }
 
-    /* --- Initializations --- */
-    window.onload = function() {
+    function toggleBook(idx) {
+      books[idx].done = !books[idx].done;
+      renderBooks();
+    }
+
+    function deleteBook(idx) {
+      books.splice(idx, 1);
+      renderBooks();
+    }
+
+    /* --- YouTube Links --- */
+    let ytLinks = JSON.parse(localStorage.getItem('ytListData')) || [];
+
+    function renderYtLinks() {
+      const list = document.getElementById("ytList");
+      list.innerHTML = "";
+      ytLinks.forEach((item, idx) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span class="item-content">
+            📌 <strong>${item.title}:</strong>&nbsp;
+            <a href="${item.url}" target="_blank" class="yt-link">${item.url}</a>
+          </span>
+          <button class="delete-btn" onclick="deleteYtLink(${idx})">✕</button>
+        `;
+        list.appendChild(li);
+      });
+      localStorage.setItem('ytListData', JSON.stringify(ytLinks));
+    }
+
+    function addYtLink() {
+      const title = document.getElementById("ytTitleInput").value.trim();
+      const url = document.getElementById("ytUrlInput").value.trim();
+      if (!title || !url) return;
+      ytLinks.push({ title, url });
+      document.getElementById("ytTitleInput").value = "";
+      document.getElementById("ytUrlInput").value = "";
+      renderYtLinks();
+    }
+
+    function deleteYtLink(idx) {
+      ytLinks.splice(idx, 1);
+      renderYtLinks();
+    }
+
+    /* --- Notes --- */
+    function saveNotes() {
+      const text = document.getElementById("notes").value;
+      localStorage.setItem('savedNotes', text);
+      alert("💾 Notes saved!");
+    }
+
+    function loadNotes() {
+      const saved = localStorage.getItem('savedNotes');
+      if (saved) document.getElementById("notes").value = saved;
+    }
+
+    /* --- Initializer --- */
+    window.onload = () => {
       setDailyAyah();
       loadSavedQuote();
-      loadTimetable();
-      loadTasks();
       updateCountdowns();
-      getLocationWeather();
+      renderTimetable();
+      renderWater();
+      renderStreak();
+      renderTasks();
+      renderBooks();
+      renderYtLinks();
+      loadNotes();
 
       const savedColor = localStorage.getItem('themeColor');
       if (savedColor) changeColor(savedColor);
 
-      if (localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-      }
+      const savedDark = localStorage.getItem('darkMode');
+      if (savedDark === 'true') document.body.classList.add('dark-mode');
+
+      searchCityWeather("Erbil");
     };
   </script>
 </body>
